@@ -1,5 +1,6 @@
 //push f9 to compile, right click makefile and make to upload
 //reset the device on the 3rd f6 compile status line
+//adsgfdgdf
 #include <Arduino.h>
 
 #include <SPI.h>
