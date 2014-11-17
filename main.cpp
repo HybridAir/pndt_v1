@@ -42,7 +42,7 @@ String rtcStatus;
 byte mode;
 
 
-void setup() {
+void setup() { //sdgfshfhdfgjhg
     analogReference(EXTERNAL);
     pinMode(BL, INPUT);
     pinMode(BC, INPUT);
