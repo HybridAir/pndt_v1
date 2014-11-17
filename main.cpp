@@ -1,6 +1,5 @@
-//push f9 to compile, then f6 to compile everything and upload
-//reset the device on the 4th f6 compile status line
-//right click makefile and do make to upload
+//push f9 to compile, right click makefile and make to upload
+//reset the device on the 3rd f6 compile status line
 #include <Arduino.h>
 
 #include <SPI.h>
@@ -14,6 +13,8 @@
 #define OLED_DC     4
 #define OLED_CS     6
 #define OLED_RESET  12
+
+#define OLED_WIDTH  128
 Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
 
 const int numReadings = 20;
@@ -35,6 +36,7 @@ int CHRG = 5;
 
 void setup();
 void loop();
+void drawBtnBar();
 int checkCharge();
 String rtcStatus;
 byte mode;
@@ -109,86 +111,121 @@ void loop() {
 //    delay(100);
     
     
-      total= total - readings[index];         
-  // read from the sensor: 
-      analogRead(A0);
-      delay(10);
-  readings[index] = analogRead(A0); 
-  // add the reading to the total:
-  total= total + readings[index];       
-  // advance to the next position in the array:  
-  index = index + 1;                    
-
-  // if we're at the end of the array...
-  if (index >= numReadings)              
-    // ...wrap around to the beginning: 
-    index = 0;                           
-
-  // calculate the average:
-  average = total / numReadings;         
-  
-      display.clearDisplay();
-    display.setCursor(0, 0);
-    float voltage = average * (2.495 / 1024.0);   //convert the value to a true voltage.
-    display.setTextSize(4);
-    display.println((voltage * 2));
+//      total= total - readings[index];         
+//  // read from the sensor: 
+//      analogRead(A0);
+//      delay(10);
+//  readings[index] = analogRead(A0); 
+//  // add the reading to the total:
+//  total= total + readings[index];       
+//  // advance to the next position in the array:  
+//  index = index + 1;                    
+//
+//  // if we're at the end of the array...
+//  if (index >= numReadings)              
+//    // ...wrap around to the beginning: 
+//    index = 0;                           
+//
+//  // calculate the average:
+//  average = total / numReadings;         
+//  
+//      display.clearDisplay();
+//    display.setCursor(0, 0);
+//    float voltage = average * (2.495 / 1024.0);   //convert the value to a true voltage.
+//    display.setTextSize(4);
+//    display.println((voltage * 2));
+//    
+//    if (checkCharge() == 0) {
+//        display.setTextSize(2);
+//        display.println("Unplugged");
+//        if (last == 1) {
+//            digitalWrite(ON, LOW);
+//            delay(10);
+//            digitalWrite(OFF, HIGH);
+//        delay(10);
+//        digitalWrite(OFF, LOW);
+//        }
+//    }
+//    else if(checkCharge() == 1) {
+//        display.setTextSize(2);
+//        display.println("Charging");
+//        last = 1;
+//        digitalWrite(ON, HIGH);
+//    }
+//    else {
+//        display.setTextSize(2);
+//        display.println("Charged");
+//        last = 1;
+//        digitalWrite(ON, HIGH);
+//    }
+//    
+//    analogRead(TMP);
+//    delay(10);
+//    long temp = analogRead(TMP);
+//    display.setTextSize(1);
+//    display.print(((temp * (2495.0 / 1024.0)) - 500) / 10.0);
+//    
+//    display.print(" ");
+//    display.print(hourFormat12());
+//    display.print(minute());
+//    display.print(second());
+//    display.print(" ");
+//    display.print(rtcStatus);
+//    display.print(" ");
+//    display.println(mode);
+//    
+//    if(digitalRead(BL)) {
+//        display.print("1");
+//        digitalWrite(OFF, HIGH);
+//        delay(10);
+//        digitalWrite(OFF, LOW);
+//    }
+//    if(digitalRead(BC)) {
+//        display.print("2");
+//    }
+//    if(digitalRead(BR)) {
+//        display.print("3");
+//        digitalWrite(ON, HIGH);
+//        delay(10);
+//        digitalWrite(ON, LOW);
+//    }
+//    display.display();
+//    delay(100);
     
-    if (checkCharge() == 0) {
-        display.setTextSize(2);
-        display.println("Unplugged");
-        if (last == 1) {
-            digitalWrite(ON, LOW);
-            delay(10);
-            digitalWrite(OFF, HIGH);
-        delay(10);
-        digitalWrite(OFF, LOW);
-        }
-    }
-    else if(checkCharge() == 1) {
-        display.setTextSize(2);
-        display.println("Charging");
-        last = 1;
-        digitalWrite(ON, HIGH);
-    }
-    else {
-        display.setTextSize(2);
-        display.println("Charged");
-        last = 1;
-        digitalWrite(ON, HIGH);
-    }
+    drawBtnBar();
+
     
-    analogRead(TMP);
-    delay(10);
-    long temp = analogRead(TMP);
+}
+
+void drawBtnBar() {
+    display.drawFastHLine(0, 55, display.width(), WHITE);
     display.setTextSize(1);
-    display.print(((temp * (2495.0 / 1024.0)) - 500) / 10.0);
     
-    display.print(" ");
-    display.print(hourFormat12());
-    display.print(minute());
-    display.print(second());
-    display.print(" ");
-    display.print(rtcStatus);
-    display.print(" ");
-    display.println(mode);
+    //left
+    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);
+    display.fillRect(0, 56, 8, 8, WHITE);
     
-    if(digitalRead(BL)) {
-        display.print("1");
-        digitalWrite(OFF, HIGH);
-        delay(10);
-        digitalWrite(OFF, LOW);
-    }
-    if(digitalRead(BC)) {
-        display.print("2");
-    }
-    if(digitalRead(BR)) {
-        display.print("3");
-        digitalWrite(ON, HIGH);
-        delay(10);
-        digitalWrite(ON, LOW);
-    }
+    display.setTextColor(BLACK);
+    display.setCursor(2, 56);
+    display.print("<");
+    display.setCursor(3, 56);
+    display.print("<");
+    
+    //center
+    display.setTextColor(WHITE);
+    display.setCursor(52, 56);
+    display.print("Menu");
+    
+    //right
+    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);
+    display.fillRect(120, 56, 8, 8, WHITE);
+    
+    display.setTextColor(BLACK);
+    display.setCursor(121, 56);
+    display.print(">");
+    display.setCursor(120, 56);
+    display.print(">");
     display.display();
-    delay(100);
 }
 
 int checkCharge() {
