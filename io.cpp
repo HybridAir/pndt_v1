@@ -22,11 +22,20 @@ io::io() {                                                                      
     btnC.attach(BTNC);
     btnR.attach(BTNR);
     
-    //initialize running average arrays to 0 
-    for (byte index = 0; index < AVG; index++)
+    //initialize running average variables to 0
+    for (byte index = 0; index < AVG; index++) {
         tmpReadings[index] = 0;
         batReadings[index] = 0;
     }
+    tmpTotal = 0;
+    tmpIndex = 0;
+    batTotal = 0;
+    batIndex = 0;
+    
+    lastCharge = false;                                                             //assume the device is currently unplugged
+    active = false;                                             //temporary
+
+}
 
 void io::ioMon() {                                                              //***monitors IO, keeps running averages, etc
 
@@ -65,20 +74,50 @@ float io::getTmp() {                                                            
     return (((tmp * ((AVG*1000.0) / 1024.0)) - 500) / 10.0);                    //do some witchcraft and return the converted float
 }
 
-void io::powerSwitch(bool level) {                                                  //pulses the power switch on or off (does not hold output)
-    //check powerStatOn or powerStatOff to check if it's already being held on/off                                                  
+void io::powerSwitch(byte level, bool enable) {                                 //turns the power switch on or off
+    digitalWrite(level, enable);                                                
 }
 
-void io::powerHold(bool level, bool enable) {                                       //holds the power switch on/off until disabled
-    //check to make sure nothing is being held
-}
-
-byte io::getCharge() {                                                              //returns the charge status
+byte io::getCharge() {                                                          //checks the tri-state status output from the charger IC
+    digitalWrite(CHRG, LOW);                                                    //disable pull-up, weak pull-down is currently active
+    if(digitalRead(CHRG)) {                                                     //a high reading only has one result, so end here
+        return 2;                                                               //charging has been completed (or the battery is not connected)
+    }
+    digitalWrite(CHRG, HIGH);                                                   //enable the pull-up, the weak pull-down is too weak to matter
+    if(digitalRead(CHRG)) {                                                     //it turns out that the input was only kept low by the pull-down before this
+        digitalWrite(CHRG, LOW);                                                //disable the pull-up to save power
+        return 0;                                                               //the charger is offline/unpowered
+    }
     
+    digitalWrite(CHRG, LOW);                                                    //disable the pull-up to save power (if we managed to get here)
+    return 1;                                                                   //the pin is basically pulled to ground, charger is charging
 }
 
-void io::monitorCharge() {                                                          //***used to monitor the charge status, and to automatically switch the power on or off
+void io::monitorCharge() {                                                      //***used to monitor the charge status and automatically switch the power on or off
+    //the device turns on automatically when charging, by design
+    //lets the user know that the device is charging and how close it is
+    //turning off while charging is disabled, by design
     
+    switch(getCharge()) {
+        case 0:                                                                 //used to turn the device OFF after being unplugged
+            if(!active) {                                                       //make sure that the device was not being used
+                if(lastCharge) {                                                //check if the device is charged or was just charging (it will be normally unplugged you know)
+                    powerSwitch(ON, LOW);                                       //stop the power switch from being held ON (can't turn off if it is)
+                    powerSwitch(OFF, HIGH);                                     //make the power switch turn OFF (device operation will end here)
+                }
+            }
+            lastCharge == false;                                                //if we get here, the device was already unplugged or is active, so keep it that way
+            break;
+        case 1:                                                                 //used to hold the device ON while charging or charged
+        case 2:
+            //this is done to make sure the user knows when the device is being charged
+            //it shouldn't be turned off to help prevent the user from forgetting it's plugged in
+            //not that it should hurt anything, but I didn't design auto USB power cutoff for reasons
+            //we don't want to give the lipo any reason to be pissed off (very unlikely)
+            lastCharge = true;
+            powerSwitch(ON, HIGH);
+            break;                     
+    }  
 }
 
 void io::processBatt() {                                                        //***keeps a running average of the battery voltage     
