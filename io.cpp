@@ -74,8 +74,9 @@ float io::getTmp() {                                                            
     return (((tmp * ((AVG*1000.0) / 1024.0)) - 500) / 10.0);                    //do some witchcraft and return the converted float
 }
 
-void io::powerSwitch(byte level, bool enable) {                                 //turns the power switch on or off
-    digitalWrite(level, enable);                                                
+void io::turnOff() {                                                            //a simple way to turn the power switch off
+    digitalWrite(ON, LOW);                                                       //stop the power switch from being held ON (can't turn off if it is)
+    digitalWrite(OFF, HIGH);                                                     //make the power switch turn OFF (device operation will end here)
 }
 
 byte io::getCharge() {                                                          //checks the tri-state status output from the charger IC
@@ -102,11 +103,10 @@ void io::monitorCharge() {                                                      
         case 0:                                                                 //used to turn the device OFF after being unplugged
             if(!active) {                                                       //make sure that the device was not being used
                 if(lastCharge) {                                                //check if the device is charged or was just charging (it will be normally unplugged you know)
-                    powerSwitch(ON, LOW);                                       //stop the power switch from being held ON (can't turn off if it is)
-                    powerSwitch(OFF, HIGH);                                     //make the power switch turn OFF (device operation will end here)
+                    turnOff();
                 }
             }
-            lastCharge == false;                                                //if we get here, the device was already unplugged or is active, so keep it that way
+            lastCharge = false;                                                //if we get here, the device was already unplugged or is active, so keep it that way
             break;
         case 1:                                                                 //used to hold the device ON while charging or charged
         case 2:
@@ -115,7 +115,7 @@ void io::monitorCharge() {                                                      
             //not that it should hurt anything, but I didn't design auto USB power cutoff for reasons
             //we don't want to give the lipo any reason to be pissed off (very unlikely)
             lastCharge = true;
-            powerSwitch(ON, HIGH);
+            digitalWrite(ON, HIGH);
             break;                     
     }  
 }
