@@ -25,7 +25,7 @@ class io {
         byte btnMon();
         void processTmp();
         float getTmp();
-        void powerSwitch(byte level, bool enable);
+        void turnOff();
         byte getCharge();
         void monitorCharge();
         void processBatt();
