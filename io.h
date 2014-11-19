@@ -25,8 +25,7 @@ class io {
         byte btnMon();
         void processTmp();
         float getTmp();
-        void powerSwitch(bool level);
-        void powerHold(bool level, bool enable);
+        void powerSwitch(byte level, bool enable);
         byte getCharge();
         void monitorCharge();
         void processBatt();
@@ -37,13 +36,16 @@ class io {
         Bounce btnR;
         int tmp;
         int batt;
+        bool lastCharge;
         
         int tmpReadings[AVG];
         int tmpIndex;
-        int tmpTotal = 0;
+        int tmpTotal;
         int batReadings[AVG];
         int batIndex;
-        int batTotal = 0;
+        int batTotal;
+        
+        bool active;    //temporary
               
 };
 
