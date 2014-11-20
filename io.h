@@ -8,17 +8,16 @@
 #define BTNC        9                                                           //center button
 #define BTNR        8                                                           //right button
 #define TMP         A5                                                          //temperature pin
-
 #define OFF         1                                                           //off pin
 #define ON          0                                                           //on pin
 #define CHRG        5                                                           //charge status pin
 #define BATT        A0                                                          //battery voltage pin
 
 #define AVG         20                                                          //amount of entries to keep for running averages
-
-#define DELAY       100
-
-const float AREF = 2.495;
+#define DELAY       1000                                                        //time to delay running average checks
+#define AREF        2.495                                                       //external analog reference voltage
+#define LOWBATT     3.5                                                         //low battery voltage
+#define DEADBATT    3.45                                                        //dead battery voltage
 
 class io {
     public:
@@ -41,21 +40,17 @@ class io {
         int batt;
         int lastBatt;
         bool lastCharge;
-        
         int tmpReadings[AVG];
-        int tmpIndex;
+        byte tmpIndex;
         int tmpTotal;
         int batReadings[AVG];
-        int batIndex;
+        byte batIndex;
         int batTotal;
+        bool battStable;
         
         bool active;    //temporary
         
-        unsigned long previousMillis;        // will store last time LED was updated
-
-// the follow variables is a long because the time, measured in miliseconds,
-// will quickly become a bigger number than can be stored in an int.
-unsigned long interval;           // interval at which to blink (milliseconds)
+        unsigned long previousMillis;                                           
               
 };
 
