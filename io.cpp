@@ -37,8 +37,10 @@ io::io() {                                                                      
 
 }
 
-void io::ioMon() {                                                              //***monitors IO, keeps running averages, etc
-
+void io::ioMon() {                                                              //***monitors IO, keeps background values up to date
+    processTmp();
+    processBatt();
+    monitorCharge();
 }
 
 byte io::btnMon() {                                                             //***checks buttons, and returns which ones have been pressed
@@ -75,8 +77,8 @@ float io::getTmp() {                                                            
 }
 
 void io::turnOff() {                                                            //a simple way to turn the power switch off
-    digitalWrite(ON, LOW);                                                       //stop the power switch from being held ON (can't turn off if it is)
-    digitalWrite(OFF, HIGH);                                                     //make the power switch turn OFF (device operation will end here)
+    digitalWrite(ON, LOW);                                                      //stop the power switch from being held ON (can't turn off if it is)
+    digitalWrite(OFF, HIGH);                                                    //make the power switch turn OFF (device operation will end here)
 }
 
 byte io::getCharge() {                                                          //checks the tri-state status output from the charger IC
@@ -106,7 +108,7 @@ void io::monitorCharge() {                                                      
                     turnOff();
                 }
             }
-            lastCharge = false;                                                //if we get here, the device was already unplugged or is active, so keep it that way
+            lastCharge = false;                                                 //if we get here, the device was already unplugged or is active, so keep it that way
             break;
         case 1:                                                                 //used to hold the device ON while charging or charged
         case 2:
@@ -134,5 +136,21 @@ void io::processBatt() {                                                        
 }
 
 float io::getBatt() {                                                           //returns corrected battery voltage as a float
-    return (batt * (AREF / 1024.0));                                            //convert the value to a true voltage and return it
+    return 2.0*(batt * (AREF / 1024.0));                                            //convert the value to a true voltage and return it
+}
+
+byte io::monitorBatt() {                                                        //***used to trigger low battery warnings, returns error level
+    //check when the device is first turned on (fullscreen dead batt)
+    //check while normal operation for low
+    //check when the batt is dead during normal operation (like first)
+
+    if(getBatt() >= 3.6) {                                                      //if the battery level is 3.6 and up, everything is good
+        return 0;
+    }
+    else if(getBatt() < 3.6 && getBatt() > 3.49) {                              //if the battery is anywhere within 3.5
+        return 1;                                                               //return the low warning value
+    }
+    else {                                                                      //the battery is lower than 3.5
+        return 2;                                                               //return the dead warning value
+    }
 }
