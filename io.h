@@ -16,6 +16,8 @@
 
 #define AVG         20                                                          //amount of entries to keep for running averages
 
+#define DELAY       100
+
 const float AREF = 2.495;
 
 class io {
@@ -37,6 +39,7 @@ class io {
         Bounce btnR;
         int tmp;
         int batt;
+        int lastBatt;
         bool lastCharge;
         
         int tmpReadings[AVG];
@@ -47,6 +50,12 @@ class io {
         int batTotal;
         
         bool active;    //temporary
+        
+        unsigned long previousMillis;        // will store last time LED was updated
+
+// the follow variables is a long because the time, measured in miliseconds,
+// will quickly become a bigger number than can be stored in an int.
+unsigned long interval;           // interval at which to blink (milliseconds)
               
 };
 
