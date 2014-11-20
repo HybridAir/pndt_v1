@@ -30,16 +30,13 @@ io::io() {                                                                      
     tmpTotal = 0;
     tmpIndex = 0;
     batTotal = 0;
-    batIndex = 0;
-    
-    lastCharge = false;                                                             //assume the device is currently unplugged
+    batIndex = 0;  
+    battStable = false;                                                         //assume the battery voltage average is unstable
+    lastCharge = false;                                                         //assume the device is currently unplugged
     active = false;                                             //temporary
+    lastBatt = -1;                                                              //set to something outside the battery average threshold
     
-    previousMillis = 0;        // will store last time LED was updated
-
-// the follow variables is a long because the time, measured in miliseconds,
-// will quickly become a bigger number than can be stored in an int.
-interval = 100;           // interval at which to blink (milliseconds)
+    previousMillis = 0;                                                         //stores the last time the battery average was taken
 
 }
 
@@ -129,7 +126,7 @@ void io::monitorCharge() {                                                      
 }
 
 void io::processBatt() {                                                        //***keeps a running average of the battery voltage 
-    bool battStable = false;                                                    //assume battery average is unstable
+    battStable = false;                                                         //assume battery average is unstable
     bool checkAvg = false;                                                      //don't allow getting a new average yet
     
     //the battery voltage average is kept clean by using a delay
@@ -168,7 +165,7 @@ void io::processBatt() {                                                        
 }
 
 float io::getBatt() {                                                           //returns corrected battery voltage as a float
-    return 2.0*(batt * (AREF / 1024.0));                                            //convert the value to a true voltage and return it
+    return 2.0*(batt * (AREF / 1024.0));                                        //convert the value to a true voltage and return it
 }
 
 byte io::monitorBatt() {                                                        //***used to trigger low battery warnings, returns error level
@@ -176,15 +173,16 @@ byte io::monitorBatt() {                                                        
     //check while normal operation for low
     //check when the batt is dead during normal operation (like first)
     
-    //needs to be made so once the low level is triggered, it can't be removed without restarting or charging
-
-    if(getBatt() >= 3.5) {                                                      //if the battery level is 3.6 and up, everything is good
-        return 0;
+    if(battStable && getCharge() == 0) {                                        //only return a low warning if the battery voltage average is stable and not charging
+        if(getBatt() >= LOWBATT) {                                              //if the battery is not low or dead
+            return 0;
+        }
+        else if(getBatt() < LOWBATT && getBatt() >= DEADBATT) {                 //if the battery is low but not dead
+            return 1;                                                           //return the low warning value
+        }
+        else {                                                                  //the battery is probably dead
+            return 2;                                                           //return the dead warning value
+        }
     }
-    else if(getBatt() < 3.5 && getBatt() > 3.45) {                              //if the battery is anywhere within 3.4
-        return 1;                                                               //return the low warning value
-    }
-    else {                                                                      //the battery is lower than 3.45
-        return 2;                                                               //return the dead warning value
-    }
+    return 0;
 }
