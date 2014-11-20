@@ -11,6 +11,8 @@
 #include <DS1307RTC.h>
 #include <EEPROM.h>
 
+#include "io.h"
+
 #define OLED_DC     4
 #define OLED_CS     6
 #define OLED_RESET  12
@@ -18,21 +20,21 @@
 #define OLED_WIDTH  128
 Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
 
-const int numReadings = 20;
-int readings[numReadings];      // the readings from the analog input
-int index = 0;                  // the index of the current reading
-int total = 0;                  // the running total
-int average = 0;                // the average
+//const int numReadings = 20;
+//int readings[numReadings];      // the readings from the analog input
+//int index = 0;                  // the index of the current reading
+//int total = 0;                  // the running total
+//int average = 0;                // the average
 
-int BL = 10;
-int BC = 9;
-int BR = 8;
+//int BL = 10;
+//int BC = 9;
+//int BR = 8;
+//
+//int OFF = 1;
+//int ON = 0;
+//int CHRG = 5;
 
-int OFF = 1;
-int ON = 0;
-int CHRG = 5;
-
-#define TMP A5
+//#define TMP A5
 
 
 void setup();
@@ -42,14 +44,16 @@ int checkCharge();
 String rtcStatus;
 byte mode;
 
+io inout;                                                                       //new instance of IO
+
 
 void setup() { //sdgfshfhdfgjhg
-    analogReference(EXTERNAL);
-    pinMode(BL, INPUT);
-    pinMode(BC, INPUT);
-    pinMode(BR, INPUT);
-    pinMode(OFF, OUTPUT); //off
-    pinMode(ON, OUTPUT); //on
+//    analogReference(EXTERNAL);
+//    pinMode(BL, INPUT);
+//    pinMode(BC, INPUT);
+//    pinMode(BR, INPUT);
+//    pinMode(OFF, OUTPUT); //off
+//    pinMode(ON, OUTPUT); //on
   display.begin(SSD1306_SWITCHCAPVCC);
   display.display();
   delay(1000);
@@ -69,8 +73,8 @@ void setup() { //sdgfshfhdfgjhg
       //  RTC.set(1416113806);
       //setTime(1416113806);
   
-  for (int thisReading = 0; thisReading < numReadings; thisReading++)
-    readings[thisReading] = 0;   
+//  for (int thisReading = 0; thisReading < numReadings; thisReading++)
+//    readings[thisReading] = 0;   
   
   byte reg = 0;
 byte value;
@@ -193,7 +197,17 @@ void loop() {
 //    display.display();
 //    delay(100);
     
-    drawBtnBar();
+    //drawBtnBar();
+    inout.ioMon();
+          display.clearDisplay();
+    display.setCursor(0, 0);
+    display.setTextSize(4);
+    display.println(inout.getBatt());
+    if(inout.monitorBatt() > 0) {
+        display.setTextSize(1);
+        display.println("low batt");
+    }
+    display.display();
 
     
 }
