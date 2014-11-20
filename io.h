@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include <Bounce.h> 
 
-#define AREF        2.495
-
 #define BTNL        10                                                          //left button
 #define BTNC        9                                                           //center button
 #define BTNR        8                                                           //right button
@@ -17,6 +15,8 @@
 #define BATT        A0                                                          //battery voltage pin
 
 #define AVG         20                                                          //amount of entries to keep for running averages
+
+const float AREF = 2.495;
 
 class io {
     public:
@@ -30,6 +30,7 @@ class io {
         void monitorCharge();
         void processBatt();
         float getBatt();
+        byte monitorBatt();
     private:
         Bounce btnL;
         Bounce btnC;
