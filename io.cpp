@@ -34,6 +34,12 @@ io::io() {                                                                      
     
     lastCharge = false;                                                             //assume the device is currently unplugged
     active = false;                                             //temporary
+    
+    previousMillis = 0;        // will store last time LED was updated
+
+// the follow variables is a long because the time, measured in miliseconds,
+// will quickly become a bigger number than can be stored in an int.
+interval = 100;           // interval at which to blink (milliseconds)
 
 }
 
@@ -122,17 +128,43 @@ void io::monitorCharge() {                                                      
     }  
 }
 
-void io::processBatt() {                                                        //***keeps a running average of the battery voltage     
-    batTotal= batTotal - batReadings[batIndex];                                 //subtract the last reading from the total                                    
-    analogRead(BATT);                                                            //dummy analogread to keep the ADC happy                                            
-    delayMicroseconds(10);                                                      //wait an insignificant amount of time
-    batReadings[batIndex] = analogRead(BATT);                                    //put a potentially gross tmp reading into the current index
-    batTotal= batTotal + batReadings[batIndex];                                 //add that reading to the total     
-    batIndex = batIndex + 1;                                                    //advance to the next position of the array              
-    if (batIndex >= AVG) {                                                      //check if we are at the end of the array        
-        batIndex = 0;                                                           //reset the position     
+void io::processBatt() {                                                        //***keeps a running average of the battery voltage 
+    bool battStable = false;                                                    //assume battery average is unstable
+    bool checkAvg = false;                                                      //don't allow getting a new average yet
+    
+    //the battery voltage average is kept clean by using a delay
+    if(batt <= (lastBatt + 0.01) && batt >= (lastBatt - 0.01)) {                //check if the average battery voltage is +- .01 of the previous value
+        battStable = true;                                                      //battery voltage can be considered stable
     }
-    batt = batTotal / AVG;                                                       //get the smooth and creamy average out  
+    else {                                                                      //the average voltage deviates more than +- .01
+        battStable = false;                                                     //battery voltage is considered unstable
+    }
+
+    if(battStable) {                                                            //if the battery voltage is stable
+        //use a timer to allow a new average every DELAY
+        unsigned long currentMillis = millis();                                 //get the current time (maybe get this from the time chip?????)
+        if(currentMillis - previousMillis > DELAY) {                            //check if 100 ms have elapsed
+            previousMillis = currentMillis;                                     //save the current time as the previous amount
+            checkAvg = true;                                                    //let the program get the new average
+        }
+    }
+    else {                                                                      //if the battery voltage is unstable (just turned on, etc)
+        checkAvg = true;                                                        //skip the delay, and allow getting the new average asap
+    }
+
+    if(checkAvg) {                                                              //get a new average only if it's time to
+        lastBatt = batt;                                                        //get the old average for comparing
+        batTotal= batTotal - batReadings[batIndex];                             //subtract the last reading from the total                                    
+        analogRead(BATT);                                                       //dummy analogread to keep the ADC happy                                            
+        delayMicroseconds(10);                                                  //wait an insignificant amount of time
+        batReadings[batIndex] = analogRead(BATT);                               //put a potentially gross tmp reading into the current index
+        batTotal= batTotal + batReadings[batIndex];                             //add that reading to the total     
+        batIndex = batIndex + 1;                                                //advance to the next position of the array              
+        if (batIndex >= AVG) {                                                  //check if we are at the end of the array        
+            batIndex = 0;                                                       //reset the position     
+        }
+        batt = batTotal / AVG;                                                  //get the smooth and creamy average out  
+    }
 }
 
 float io::getBatt() {                                                           //returns corrected battery voltage as a float
@@ -143,14 +175,16 @@ byte io::monitorBatt() {                                                        
     //check when the device is first turned on (fullscreen dead batt)
     //check while normal operation for low
     //check when the batt is dead during normal operation (like first)
+    
+    //needs to be made so once the low level is triggered, it can't be removed without restarting or charging
 
-    if(getBatt() >= 3.6) {                                                      //if the battery level is 3.6 and up, everything is good
+    if(getBatt() >= 3.5) {                                                      //if the battery level is 3.6 and up, everything is good
         return 0;
     }
-    else if(getBatt() < 3.6 && getBatt() > 3.49) {                              //if the battery is anywhere within 3.5
+    else if(getBatt() < 3.5 && getBatt() > 3.45) {                              //if the battery is anywhere within 3.4
         return 1;                                                               //return the low warning value
     }
-    else {                                                                      //the battery is lower than 3.5
+    else {                                                                      //the battery is lower than 3.45
         return 2;                                                               //return the dead warning value
     }
 }
