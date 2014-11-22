@@ -15,7 +15,7 @@
 
 #define AVG         20                                                          //amount of entries to keep for running averages
 #define DELAY       1000                                                        //time to delay running average checks
-#define AREF        2.495                                                       //external analog reference voltage
+#define AREF        2.42                                                        //internal calibrated analog reference voltage
 #define LOWBATT     3.5                                                         //low battery voltage
 #define DEADBATT    3.45                                                        //dead battery voltage
 
