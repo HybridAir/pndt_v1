@@ -39,6 +39,7 @@ class io {
         int tmp;
         int batt;
         int lastBatt;
+        int lastTmp;
         bool lastCharge;
         int tmpReadings[AVG];
         byte tmpIndex;
@@ -47,10 +48,12 @@ class io {
         byte batIndex;
         int batTotal;
         bool battStable;
+        bool tmpStable;
         
         bool active;    //temporary
         
-        unsigned long previousMillis;                                           
+        unsigned long previousMillis;   
+        unsigned long previousMillis2; 
               
 };
 
