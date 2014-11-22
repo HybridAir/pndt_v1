@@ -32,11 +32,13 @@ io::io() {                                                                      
     batTotal = 0;
     batIndex = 0;  
     battStable = false;                                                         //assume the battery voltage average is unstable
+    tmpStable = false;                                                          //assume the temperature average is unstable
     lastCharge = false;                                                         //assume the device is currently unplugged
     active = false;                                             //temporary
     lastBatt = -1;                                                              //set to something outside the battery average threshold
     
     previousMillis = 0;                                                         //stores the last time the battery average was taken
+    previousMillis2 = 0;                                                         //stores the last time the battery average was taken
 
 }
 
@@ -48,14 +50,17 @@ void io::ioMon() {                                                              
 
 byte io::btnMon() {                                                             //***checks buttons, and returns which ones have been pressed
     byte out = 0;                                                               //the variable that holds the triplet output value
-    
-    if(btnL.update() && !btnL.read()) {                                         //if BTNL's state just changed to low (pressed)
+    //update all buttons
+    btnL.update();
+    btnC.update();
+    btnR.update();
+    if(btnL.read()) {                                                           //if BTNL is pressed
         out += 1;                                                               //add 1 to the triplet output
     }
-    if(btnC.update() && !btnC.read()) {                                         //if BTNC's state just changed to low (pressed)
+    if(btnC.read()) {                                                           //if BTNC is pressed
         out += 2;                                                               //add 2 to the triplet output
     }
-    if(btnR.update() && !btnR.read()) {                                         //if BTNR's state just changed to low (pressed)
+    if(btnR.read()) {                                                           //if BTNR is pressed
         out += 4;                                                               //add 4 to the triplet output
     }
     
@@ -63,20 +68,46 @@ byte io::btnMon() {                                                             
 }
 
 void io::processTmp() {                                                         //***keeps a running average of the temperature input  
-    tmpTotal= tmpTotal - tmpReadings[tmpIndex];                                 //subtract the last reading from the total                                    
-    analogRead(TMP);                                                            //dummy analogread to keep the ADC happy                                            
-    delayMicroseconds(10);                                                      //wait an insignificant amount of time
-    tmpReadings[tmpIndex] = analogRead(TMP);                                    //put a potentially gross tmp reading into the current index
-    tmpTotal= tmpTotal + tmpReadings[tmpIndex];                                 //add that reading to the total     
-    tmpIndex = tmpIndex + 1;                                                    //advance to the next position of the array              
-    if (tmpIndex >= AVG) {                                                      //check if we are at the end of the array        
-        tmpIndex = 0;                                                           //reset the position     
+    tmpStable = false;                                                          //assume temperature average is unstable
+    bool checkAvg = false;                                                      //don't allow getting a new average yet
+    
+    //the temperature average is kept clean by using a delay
+    if(tmp <= (lastTmp + 0.01) && tmp >= (lastTmp - 0.01)) {                //check if the average battery voltage is +- .01 of the previous value
+        tmpStable = true;                                                      //battery voltage can be considered stable
     }
-    tmp = tmpTotal / AVG;                                                       //get the smooth and creamy average out       
+    else {                                                                      //the average voltage deviates more than +- .01
+        tmpStable = false;                                                     //battery voltage is considered unstable
+    }
+
+    if(tmpStable) {                                                            //if the battery voltage is stable
+        //use a timer to only allow a new average after a DELAY
+        unsigned long currentMillis = millis();                                 //get the current time (maybe get this from the time chip?????)
+        if(currentMillis - previousMillis2 > DELAY) {                            //check if 100 ms have elapsed
+            previousMillis2 = currentMillis;                                     //save the current time as the previous amount
+            checkAvg = true;                                                    //let the program get the new average
+        }
+    }
+    else {                                                                      //if the battery voltage is unstable (just turned on, etc)
+        checkAvg = true;                                                        //skip the delay, and allow getting the new average asap
+    }
+
+    if(checkAvg) {                                                              //get a new average only if it's time to
+        lastTmp = tmp;                                                        //get the old average for comparing
+        tmpTotal= tmpTotal - tmpReadings[tmpIndex];                                 //subtract the last reading from the total                                    
+        analogRead(TMP);                                                            //dummy analogread to keep the ADC happy                                            
+        delayMicroseconds(10);                                                      //wait an insignificant amount of time
+        tmpReadings[tmpIndex] = analogRead(TMP);                                    //put a potentially gross tmp reading into the current index
+        tmpTotal= tmpTotal + tmpReadings[tmpIndex];                                 //add that reading to the total     
+        tmpIndex = tmpIndex + 1;                                                    //advance to the next position of the array              
+        if (tmpIndex >= AVG) {                                                      //check if we are at the end of the array        
+            tmpIndex = 0;                                                           //reset the position     
+        }
+        tmp = tmpTotal / AVG;                                                       //get the smooth and creamy average out  
+    }  
 }
 
-float io::getTmp() {                                                            //returns the converted temperature as a float
-    return (((tmp * ((AVG*1000.0) / 1024.0)) - 500) / 10.0);                    //do some witchcraft and return the converted float
+float io::getTmp() {                                                            //returns the converted celsius temperature as a float
+    return (((tmp * ((AREF * 1000) / 1024.0)) - 560) / 10.0);                    //do some witchcraft and return the converted float
 }
 
 void io::turnOff() {                                                            //a simple way to turn the power switch off
@@ -138,7 +169,7 @@ void io::processBatt() {                                                        
     }
 
     if(battStable) {                                                            //if the battery voltage is stable
-        //use a timer to allow a new average every DELAY
+        //use a timer to only allow a new average after a DELAY
         unsigned long currentMillis = millis();                                 //get the current time (maybe get this from the time chip?????)
         if(currentMillis - previousMillis > DELAY) {                            //check if 100 ms have elapsed
             previousMillis = currentMillis;                                     //save the current time as the previous amount
