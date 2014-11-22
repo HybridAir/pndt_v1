@@ -4,7 +4,7 @@
 #include "io.h"
 
 io::io() {                                                                      //default constructor
-    analogReference(EXTERNAL);                                                  //an external 2.5v analog reference is being used
+    analogReference(INTERNAL);                                                  //using the internal analog reference
     
     //initialize button inputs
     pinMode(BTNL, INPUT);                                                       
