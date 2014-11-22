@@ -1,6 +1,6 @@
 //push f9 to compile, right click makefile and make to upload
 //reset the device on the 3rd f6 compile status line
-//adsgfdgdf
+//TODO: let the user know the device cannot be turned off when plugged in
 #include <Arduino.h>
 
 #include <SPI.h>
@@ -203,9 +203,16 @@ void loop() {
     display.setCursor(0, 0);
     display.setTextSize(4);
     display.println(inout.getBatt());
-    if(inout.monitorBatt() > 0) {
+    if(inout.monitorBatt() == 1) {
         display.setTextSize(1);
         display.println("low batt");
+    }
+    else if(inout.monitorBatt() == 2) {
+        display.setTextSize(1);
+        display.println("batt depleted");
+        display.display();
+        delay(2000);
+        inout.turnOff();
     }
     display.display();
 
