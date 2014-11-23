@@ -9,9 +9,9 @@
 class rtcTime {
     public:
         rtcTime();
+        void begin();
         String getTime();
         String getDate();
-    private:
 };
 
 #endif
