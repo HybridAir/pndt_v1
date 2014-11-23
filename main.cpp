@@ -7,11 +7,10 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <Time.h>
-#include <DS1307RTC.h>
 #include <EEPROM.h>
 
 #include "io.h"
+#include "rtcTime.h"
 
 #define OLED_DC     4
 #define OLED_CS     6
@@ -45,15 +44,10 @@ String rtcStatus;
 byte mode;
 
 io inout;                                                                       //new instance of IO
+rtcTime time;
 
 
-void setup() { //sdgfshfhdfgjhg
-//    analogReference(EXTERNAL);
-//    pinMode(BL, INPUT);
-//    pinMode(BC, INPUT);
-//    pinMode(BR, INPUT);
-//    pinMode(OFF, OUTPUT); //off
-//    pinMode(ON, OUTPUT); //on
+void setup() {
   display.begin(SSD1306_SWITCHCAPVCC);
   display.display();
   delay(1000);
@@ -61,15 +55,11 @@ void setup() { //sdgfshfhdfgjhg
 
   display.setTextSize(4);
   display.setTextColor(WHITE);
-  display.setTextWrap(false);
+  display.setTextWrap(true);
   
-  if(RTC.detect() ==  0) {
-      rtcStatus = "on";
-  }
-  else {
-      rtcStatus = "off";
-  }
-  setSyncProvider(RTC.get);   // the function to get the time from the RTC
+  setSyncProvider(RTC.get);
+  
+  //setSyncProvider(RTC.get);   // the function to get the time from the RTC
       //  RTC.set(1416113806);
       //setTime(1416113806);
   
@@ -199,10 +189,19 @@ void loop() {
     
     //drawBtnBar();
     inout.ioMon();
-          display.clearDisplay();
+    display.clearDisplay();
     display.setCursor(0, 0);
-    display.setTextSize(4);
+    display.setTextSize(1);
     display.println(inout.getBatt());
+    display.println(inout.getTmp());
+    display.println(inout.btnMon());
+    
+    
+    display.println(RTC.get());
+    display.println(now());
+    display.println(time.getDate());
+    //display.println(year());
+    display.println(time.getTime());
     if(inout.monitorBatt() == 1) {
         display.setTextSize(1);
         display.println("low batt");
