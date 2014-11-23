@@ -6,8 +6,7 @@
 #include <Adafruit_SSD1306.h>
 #include <SPI.h>
 
-#include "io.h"
-#include "rtcTime.h"
+#include "pages.h"
 
 
 #define OLED_DC     4
