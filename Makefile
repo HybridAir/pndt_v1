@@ -5,7 +5,7 @@
 # For Arduino Duemilanove you must change the BAUD_RATE to 57600 bps.
 # Based on: http://playground.arduino.cc/Code/Netbeans
 
-COM_PORT = COM14
+COM_PORT = COM4
 BAUD_RATE = 115200
 ARDUINO_VERSION = 105
 ARDUINO_BASE_DIR = c:/arduino/arduino-1.0.5
@@ -30,7 +30,7 @@ ARDUINO_PINS_DIR = ${ARDUINO_BASE_DIR}/hardware/arduino/variants/leonardo
 #BAUD_RATE = 57600
 
 # Include the libraries that you want. This are subfolders of "arduino-1.0.4/libraries" folder:
-INCLUDE_LIBS=EEPROM;Adafruit_ssd1306;Adafruit_GFX;Wire;Wire/utility;SPI;Time;DS1307RTC;Bounce;
+INCLUDE_LIBS=EEPROM;Adafruit_ssd1306;Adafruit_GFX;Wire;Wire/utility;SPI;Time;MCP79412RTC;Bounce;
 #INCLUDE_LIBS=EEPROM;Esplora;Ethernet;Ethernet/utility;Firmata;GSMSHIELD;\
 LiquidCrystal;MemoryFree;RTClib;SD;SD/utility;Servo;SoftwareSerial;SPI;\
 Stepper;WiFi;WiFi/utility;Wire;Wire/utility;\
