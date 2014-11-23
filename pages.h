@@ -11,6 +11,9 @@ class pages {
     public:
         pages();
         void debug();
+        void scrollText();
+private:
+    int x;
               
 };
 
