@@ -10,6 +10,7 @@
 class pages {
     public:
         pages();
+        void doPage();
         void debug();
         void scrollText();
 private:
