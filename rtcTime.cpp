@@ -2,18 +2,12 @@
 
 #include "rtcTime.h"
 
-rtcTime::rtcTime() {                                                                      //default constructor
-    //RTC.set(1416113806);
-     // the function to get the time from the RTC
-        
-      //setTime(1416113806);
-    //RTC.set(1416113806);
-    
-    //setTime(1416113806);
-    //RTC.set(now());
-      
-      
+rtcTime::rtcTime() {               
 
+}
+
+void rtcTime::begin() {
+    setSyncProvider(RTC.get);
 }
 
 String rtcTime::getTime() {
