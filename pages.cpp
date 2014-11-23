@@ -2,6 +2,7 @@
 
 #include "pages.h"
 
+extern settings set;
 extern io inout;
 extern rtcTime time;
 extern Adafruit_SSD1306 display;
@@ -11,14 +12,14 @@ pages::pages() {
 }
 
 void pages::doPage() {                                                          //***checks with page needs to be displayed, and prepares to display it
-    switch(pageNum) {
-        case 0:
-            scrollText();
-            break;
-        case 1:
-            debug();
-            break;
-    }
+//    switch(pageNum) {
+//        case 0:
+//            scrollText();
+//            break;
+//        case 1:
+//            debug();
+//            break;
+//    }
 }
 
 void pages::scrollText() {
@@ -46,6 +47,7 @@ void pages::debug() {
     display.println(time.getDate());
     //display.println(year());
     display.println(time.getTime());
+    display.println(set.getrom());
     if(inout.monitorBatt() == 1) {
         display.setTextSize(1);
         display.println("low batt");
