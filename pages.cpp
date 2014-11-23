@@ -7,7 +7,19 @@ extern rtcTime time;
 extern Adafruit_SSD1306 display;
 
 pages::pages() {
-    
+    x = 130;
+}
+
+void pages::scrollText() {
+    display.setTextSize(8);
+      x = x - 1;
+  display.clearDisplay();
+  display.setCursor(x, 0);
+  display.println("Hello, world.");
+  display.display();
+  if(x < -650) {
+    x = 130;
+  }
 }
 
 void pages::debug() {
