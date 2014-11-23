@@ -43,8 +43,8 @@ void oled::dispMon() {
     //last line is a display.display
     display.clearDisplay();
     //page.debug();
-    drawBtnBar();
-    page.scrollText();
+    //drawBtnBar();
+    page.doPage();
     
     display.display();
 }
