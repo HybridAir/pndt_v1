@@ -11,9 +11,9 @@ pages::pages() {
 }
 
 void pages::scrollText() {
-    display.setTextSize(8);
+    display.setTextColor(WHITE);
+    display.setTextSize(7);
       x = x - 1;
-  display.clearDisplay();
   display.setCursor(x, 0);
   display.println("Hello, world.");
   display.display();
