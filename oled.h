@@ -20,6 +20,8 @@ class oled {
         oled();
         void begin();
         void dispMon();
+private:
+    void drawBtnBar();
               
 };
 
