@@ -10,6 +10,17 @@ pages::pages() {
     x = 130;
 }
 
+void pages::doPage() {                                                          //***checks with page needs to be displayed, and prepares to display it
+    switch(pageNum) {
+        case 0:
+            scrollText();
+            break;
+        case 1:
+            debug();
+            break;
+    }
+}
+
 void pages::scrollText() {
     display.setTextColor(WHITE);
     display.setTextSize(7);
