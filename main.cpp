@@ -3,21 +3,21 @@
 //TODO: let the user know the device cannot be turned off when plugged in
 #include <Arduino.h>
 
-#include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+//#include <Adafruit_GFX.h>
+//#include <Adafruit_SSD1306.h>
 #include <EEPROM.h>
 
 #include "io.h"
 #include "rtcTime.h"
+#include "oled.h"
 
-#define OLED_DC     4
-#define OLED_CS     6
-#define OLED_RESET  12
-
-#define OLED_WIDTH  128
-Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
+//#define OLED_DC     4
+//#define OLED_CS     6
+//#define OLED_RESET  12
+//
+//#define OLED_WIDTH  128
+//Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
 
 //const int numReadings = 20;
 //int readings[numReadings];      // the readings from the analog input
@@ -43,28 +43,18 @@ int checkCharge();
 String rtcStatus;
 byte mode;
 
-io inout;                                                                       //new instance of IO
-rtcTime time;
+    
+    io inout; 
+    rtcTime time;
+                                                                      //new instance of IO
+    oled disp;
+//
 
 
 void setup() {
-  display.begin(SSD1306_SWITCHCAPVCC);
-  display.display();
-  delay(1000);
-  display.clearDisplay();   // clears the screen and buffer
-
-  display.setTextSize(4);
-  display.setTextColor(WHITE);
-  display.setTextWrap(true);
-  
-  setSyncProvider(RTC.get);
-  
-  //setSyncProvider(RTC.get);   // the function to get the time from the RTC
-      //  RTC.set(1416113806);
-      //setTime(1416113806);
-  
-//  for (int thisReading = 0; thisReading < numReadings; thisReading++)
-//    readings[thisReading] = 0;   
+    disp.begin();
+    time.begin();
+ 
   
   byte reg = 0;
 byte value;
@@ -189,65 +179,41 @@ void loop() {
     
     //drawBtnBar();
     inout.ioMon();
-    display.clearDisplay();
-    display.setCursor(0, 0);
-    display.setTextSize(1);
-    display.println(inout.getBatt());
-    display.println(inout.getTmp());
-    display.println(inout.btnMon());
-    
-    
-    display.println(RTC.get());
-    display.println(now());
-    display.println(time.getDate());
-    //display.println(year());
-    display.println(time.getTime());
-    if(inout.monitorBatt() == 1) {
-        display.setTextSize(1);
-        display.println("low batt");
-    }
-    else if(inout.monitorBatt() == 2) {
-        display.setTextSize(1);
-        display.println("batt depleted");
-        display.display();
-        delay(2000);
-        inout.turnOff();
-    }
-    display.display();
+    disp.dispMon();
 
     
 }
 
-void drawBtnBar() {
-    display.drawFastHLine(0, 55, display.width(), WHITE);
-    display.setTextSize(1);
-    
-    //left
-    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);
-    display.fillRect(0, 56, 8, 8, WHITE);
-    
-    display.setTextColor(BLACK);
-    display.setCursor(2, 56);
-    display.print("<");
-    display.setCursor(3, 56);
-    display.print("<");
-    
-    //center
-    display.setTextColor(WHITE);
-    display.setCursor(52, 56);
-    display.print("Menu");
-    
-    //right
-    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);
-    display.fillRect(120, 56, 8, 8, WHITE);
-    
-    display.setTextColor(BLACK);
-    display.setCursor(121, 56);
-    display.print(">");
-    display.setCursor(120, 56);
-    display.print(">");
-    display.display();
-}
+//void drawBtnBar() {
+//    display.drawFastHLine(0, 55, display.width(), WHITE);
+//    display.setTextSize(1);
+//    
+//    //left
+//    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);
+//    display.fillRect(0, 56, 8, 8, WHITE);
+//    
+//    display.setTextColor(BLACK);
+//    display.setCursor(2, 56);
+//    display.print("<");
+//    display.setCursor(3, 56);
+//    display.print("<");
+//    
+//    //center
+//    display.setTextColor(WHITE);
+//    display.setCursor(52, 56);
+//    display.print("Menu");
+//    
+//    //right
+//    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);
+//    display.fillRect(120, 56, 8, 8, WHITE);
+//    
+//    display.setTextColor(BLACK);
+//    display.setCursor(121, 56);
+//    display.print(">");
+//    display.setCursor(120, 56);
+//    display.print(">");
+//    display.display();
+//}
 
 int checkCharge() {
     digitalWrite(CHRG, LOW);
