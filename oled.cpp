@@ -1,16 +1,20 @@
-//handles the main display related operations
+//handles the main hardware display related operations
 
 #include "oled.h"
 
 
-extern io inout;
-extern rtcTime time;
+//extern io inout;
+//extern rtcTime time;
+
+extern Adafruit_SSD1306 display;
 
 //function that is called all the time in main to update the display
 //"page" functionality
 //page/mode selection menu
 //scrolling text announcement page, home screen clock data thing, battery/charge, settings, games, power warnings
-Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
+//Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
+
+pages page;
 
 
 oled::oled() {   
@@ -38,28 +42,6 @@ void oled::dispMon() {
     //includes the button bar and probably battery warnings
     //last line is a display.display
     display.clearDisplay();
-    display.setCursor(0, 0);
-    display.setTextSize(1);
-    display.println(inout.getBatt());
-    display.println(inout.getTmp());
-    display.println(inout.btnMon());
-    
-    
-    display.println(RTC.get());
-    display.println(now());
-    display.println(time.getDate());
-    //display.println(year());
-    display.println(time.getTime());
-    if(inout.monitorBatt() == 1) {
-        display.setTextSize(1);
-        display.println("low batt");
-    }
-    else if(inout.monitorBatt() == 2) {
-        display.setTextSize(1);
-        display.println("batt depleted");
-        display.display();
-        delay(2000);
-        inout.turnOff();
-    }
+    page.debug();
     display.display();
 }
