@@ -6,6 +6,7 @@
 
 #include "io.h"
 #include "rtcTime.h"
+#include "settings.h"
 
 class pages {
     public:
