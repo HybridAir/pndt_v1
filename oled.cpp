@@ -1,4 +1,4 @@
-//handles all display related operations
+//handles the main display related operations
 
 #include "oled.h"
 
@@ -30,6 +30,13 @@ void oled::begin() {
 }
 
 void oled::dispMon() {
+    //there's going to be stuff in here okay
+    //first line is always going to clear the display
+    //next lines are going to go through each page to see what needs displaying
+    //each page will add it's stuff if necessary
+    //after that there will be some other "functions" that might need displaying
+    //includes the button bar and probably battery warnings
+    //last line is a display.display
     display.clearDisplay();
     display.setCursor(0, 0);
     display.setTextSize(1);
