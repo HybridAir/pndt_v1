@@ -2,6 +2,7 @@
 #define	MENUS_H
 
 #include <Arduino.h>
+#include "oled.h"
 
 class menus {
     public:
