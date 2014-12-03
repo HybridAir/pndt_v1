@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-class settings {
+class menus {
     public:
         menus();
         void doMain();

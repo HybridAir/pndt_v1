@@ -5,6 +5,7 @@
 settings::settings() {
     //put default settings in here   
     currentPage = 0;
+    menuActive = false;
     
     
     byte reg = 0;
@@ -48,4 +49,17 @@ void settings::prevPage() {     //need to make it so the page only gets set once
 
 void settings::setPage(byte in) {
     
+}
+
+void settings::setMenu() {             //used to toggle whether the menu is displayed
+    if(menuActive == true) {
+        menuActive = false;
+    }
+    else {
+        menuActive = true;
+    }
+}
+
+bool settings::getMenu() {
+    return menuActive;
 }
