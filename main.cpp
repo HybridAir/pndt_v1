@@ -7,6 +7,7 @@
 #include "io.h"
 #include "rtcTime.h"
 #include "oled.h"
+#include "menus.h"
 
 
 
@@ -21,6 +22,7 @@ io inout;
 rtcTime time;                                                                     //new instance of IO
 Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
 oled disp;
+menus menu;
 
 
 void setup() {
@@ -41,6 +43,9 @@ void doBtn() {
         case 0:
             if(btn == 1) {       //left button was pressed
                 set.prevPage();
+            }
+            else if(btn == 2) {     //center button
+                set.setMenu();
             }
             else if(btn == 4) {      //right button
                 set.nextPage();
