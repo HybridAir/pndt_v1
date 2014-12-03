@@ -14,9 +14,12 @@ class settings {
         void setPage(byte in);
         void nextPage();
         void prevPage();
+        void setMenu();
+        bool getMenu();
 private:
     byte mode;
     byte currentPage;
+    bool menuActive;
 };
 
 #endif
