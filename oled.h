@@ -21,7 +21,7 @@ class oled {
         void begin();
         void dispMon();
 private:
-    void drawBtnBar();
+    //void drawBtnBar();
               
 };
 
