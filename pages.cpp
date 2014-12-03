@@ -12,17 +12,18 @@ pages::pages() {
 }
 
 void pages::doPage() {                                                          //***checks with page needs to be displayed, and prepares to display it
-//    switch(pageNum) {
-//        case 0:
-//            scrollText();
-//            break;
-//        case 1:
-//            debug();
-//            break;
-//    }
+    switch(set.getPage()) {
+        case 0:
+            scrollText();
+            break;
+        case 1:
+            debug();
+            break;
+    }
 }
 
 void pages::scrollText() {
+    drawBtnBar();
     display.setTextColor(WHITE);
     display.setTextSize(7);
       x = x - 1;
@@ -32,6 +33,7 @@ void pages::scrollText() {
   if(x < -650) {
     x = 130;
   }
+  
 }
 
 void pages::debug() {
@@ -48,6 +50,8 @@ void pages::debug() {
     //display.println(year());
     display.println(time.getTime());
     display.println(set.getrom());
+    //display.print(" ");
+    //display.println(inout.btnMon());
     if(inout.monitorBatt() == 1) {
         display.setTextSize(1);
         display.println("low batt");
@@ -59,4 +63,35 @@ void pages::debug() {
         delay(2000);
         inout.turnOff();
     }
+}
+
+void pages::drawBtnBar() {
+    display.drawFastHLine(0, 55, display.width(), WHITE);
+    display.setTextSize(1);
+    
+    //left
+    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);
+    display.fillRect(0, 56, 8, 8, WHITE);
+    
+    display.setTextColor(BLACK);
+    display.setCursor(2, 56);
+    display.print("<");
+    display.setCursor(3, 56);
+    display.print("<");
+    
+    //center
+    display.setTextColor(WHITE);
+    display.setCursor(52, 56);
+    display.print("Menu");
+    
+    //right
+    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);
+    display.fillRect(120, 56, 8, 8, WHITE);
+    
+    display.setTextColor(BLACK);
+    display.setCursor(121, 56);
+    display.print(">");
+    display.setCursor(120, 56);
+    display.print(">");
+    //display.display();
 }
