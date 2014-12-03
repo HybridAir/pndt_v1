@@ -55,12 +55,12 @@ byte io::btnMon() {                                                             
     byte out = 0;                                                               //the variable that holds the triplet output value
     //update all buttons
     //btnL.update();
-    btnC.update();
+    //btnC.update();
     //btnR.update();
     if(btnL.update() && btnL.read()) {                                                           //if BTNL is pressed
         out += 1;                                                               //add 1 to the triplet output
     }
-    if(btnC.read()) {                                                           //if BTNC is pressed
+    if(btnC.update() && btnC.read()) {                                                           //if BTNC is pressed
         out += 2;                                                               //add 2 to the triplet output
     }
     if(btnR.update() && btnR.read()) {                                                           //if BTNR is pressed
