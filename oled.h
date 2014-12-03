@@ -7,6 +7,8 @@
 #include <SPI.h>
 
 #include "pages.h"
+#include "settings.h"
+#include "menus.h"
 
 
 #define OLED_DC     4
