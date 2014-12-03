@@ -13,6 +13,7 @@
 void setup();
 void loop();
 int checkCharge();
+void doBtn();
 byte mode;
 
 settings set;    
@@ -29,7 +30,23 @@ void setup() {
 
 void loop() {
     inout.ioMon();
-    disp.dispMon();    
+    disp.dispMon(); 
+    doBtn();
+}
+
+void doBtn() {
+    byte btnMode = 0;       //which mode the buttons will be used for, 0 is for pages, 1 for settings, idk etc
+    byte btn = inout.btnMon();
+    switch(btnMode) {
+        case 0:
+            if(btn == 1) {       //left button was pressed
+                set.prevPage();
+            }
+            else if(btn == 4) {      //right button
+                set.nextPage();
+            }
+            break;
+    }
 }
 
 int checkCharge() {
