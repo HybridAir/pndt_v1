@@ -16,6 +16,7 @@ class pages {
         void scrollText();
 private:
     int x;
+    void drawBtnBar();
               
 };
 
