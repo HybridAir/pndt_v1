@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
+#define NUMPAGES 1
+
 class settings {
     public:
         settings();
@@ -14,6 +16,7 @@ class settings {
         void prevPage();
 private:
     byte mode;
+    byte currentPage;
 };
 
 #endif
