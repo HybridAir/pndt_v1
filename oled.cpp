@@ -49,33 +49,33 @@ void oled::dispMon() {
     display.display();
 }
 
-void oled::drawBtnBar() {
-    display.drawFastHLine(0, 55, display.width(), WHITE);
-    display.setTextSize(1);
-    
-    //left
-    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);
-    display.fillRect(0, 56, 8, 8, WHITE);
-    
-    display.setTextColor(BLACK);
-    display.setCursor(2, 56);
-    display.print("<");
-    display.setCursor(3, 56);
-    display.print("<");
-    
-    //center
-    display.setTextColor(WHITE);
-    display.setCursor(52, 56);
-    display.print("Menu");
-    
-    //right
-    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);
-    display.fillRect(120, 56, 8, 8, WHITE);
-    
-    display.setTextColor(BLACK);
-    display.setCursor(121, 56);
-    display.print(">");
-    display.setCursor(120, 56);
-    display.print(">");
-    //display.display();
-}
+//void oled::drawBtnBar() {
+//    display.drawFastHLine(0, 55, display.width(), WHITE);
+//    display.setTextSize(1);
+//    
+//    //left
+//    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);
+//    display.fillRect(0, 56, 8, 8, WHITE);
+//    
+//    display.setTextColor(BLACK);
+//    display.setCursor(2, 56);
+//    display.print("<");
+//    display.setCursor(3, 56);
+//    display.print("<");
+//    
+//    //center
+//    display.setTextColor(WHITE);
+//    display.setCursor(52, 56);
+//    display.print("Menu");
+//    
+//    //right
+//    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);
+//    display.fillRect(120, 56, 8, 8, WHITE);
+//    
+//    display.setTextColor(BLACK);
+//    display.setCursor(121, 56);
+//    display.print(">");
+//    display.setCursor(120, 56);
+//    display.print(">");
+//    //display.display();
+//}
