@@ -48,19 +48,22 @@ void io::ioMon() {                                                              
     monitorCharge();
 }
 
+
+//make this so it only sends an output when the button is pressed, not held
+//going to need a function to tell if a button is being help
 byte io::btnMon() {                                                             //***checks buttons, and returns which ones have been pressed
     byte out = 0;                                                               //the variable that holds the triplet output value
     //update all buttons
-    btnL.update();
+    //btnL.update();
     btnC.update();
-    btnR.update();
-    if(btnL.read()) {                                                           //if BTNL is pressed
+    //btnR.update();
+    if(btnL.update() && btnL.read()) {                                                           //if BTNL is pressed
         out += 1;                                                               //add 1 to the triplet output
     }
     if(btnC.read()) {                                                           //if BTNC is pressed
         out += 2;                                                               //add 2 to the triplet output
     }
-    if(btnR.read()) {                                                           //if BTNR is pressed
+    if(btnR.update() && btnR.read()) {                                                           //if BTNR is pressed
         out += 4;                                                               //add 4 to the triplet output
     }
     
@@ -107,7 +110,7 @@ void io::processTmp() {                                                         
 }
 
 float io::getTmp() {                                                            //returns the converted celsius temperature as a float
-    return (((tmp * ((AREF * 1000) / 1024.0)) - 560) / 10.0);                    //do some witchcraft and return the converted float
+    return (((tmp * ((AREF * 1000) / 1024.0)) - 555) / 10.0);                    //do some witchcraft and return the converted float
 }
 
 void io::turnOff() {                                                            //a simple way to turn the power switch off
