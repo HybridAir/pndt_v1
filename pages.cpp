@@ -24,7 +24,7 @@ void pages::doPage() {                                                          
 }
 
 void pages::scrollText() {
-    disp.drawBtnBar('<', '>');
+    disp.drawBtnBar('<', "Menu", '>');
     display.setTextColor(WHITE);
     display.setTextSize(7);
       x = x - 1;
