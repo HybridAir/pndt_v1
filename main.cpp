@@ -8,6 +8,7 @@
 #include "rtcTime.h"
 #include "oled.h"
 #include "menus.h"
+#include "pages.h"
 
 
 
@@ -23,6 +24,7 @@ rtcTime time;                                                                   
 Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
 oled disp;
 menus menu;
+pages page;
 
 
 void setup() {
@@ -37,19 +39,13 @@ void loop() {
 }
 
 void doBtn() {
-    byte btnMode = 0;       //which mode the buttons will be used for, 0 is for pages, 1 for settings, idk etc
     byte btn = inout.btnMon();
-    switch(btnMode) {
-        case 0:
-            if(btn == 1) {       //left button was pressed
-                set.prevPage();
-            }
-            else if(btn == 2) {     //center button
-                set.setMenu();
-            }
-            else if(btn == 4) {      //right button
-                set.nextPage();
-            }
+    switch(set.getActiveMode()) {           //get the currently active screen mode (pages or menu)
+        case 0:     //page mode
+            page.doBtn(btn);
+            break;
+        case 1:
+            menu.doBtn(btn);
             break;
     }
 }
