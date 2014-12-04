@@ -54,33 +54,45 @@ void oled::dispMon() {
     display.display();
 }
 
-void oled::drawBtnBar(char left, char right) {
-    display.drawFastHLine(0, 55, display.width(), WHITE);
+void oled::drawBtnBar(char left, String center, char right) {
+    display.drawFastHLine(0, 55, display.width(), WHITE);                       //draw the separator line
     display.setTextSize(1);
     
     //left
-    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);
+    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);                          //left side designy stuff
     display.fillRect(0, 56, 8, 8, WHITE);
     
-    display.setTextColor(BLACK);
+    display.setTextColor(BLACK);                                                //print out the left indicator character, and "bold" it
     display.setCursor(2, 56);
     display.print(left);
     display.setCursor(3, 56);
     display.print(left);
     
     //center
-    display.setTextColor(WHITE);
-    display.setCursor(52, 56);
-    display.print("Menu");
+    display.setTextColor(WHITE);  
+    int centerLength = center.length();                                         //get the length of the center text
+    if((centerLength % 2) == 0) {                                               //if the length of the text is even
+        int spaces = USABLECHARS - centerLength;                                //subtract the text length from the number of usable characters to get the number of empty spaces
+        int halfSpaces = spaces / 2;                                            //divide the above by two to get the number of empty spaces on each side of the text
+        int halfChars = halfSpaces * 6;                                         //multiply the above by 6 to get the number of empty pixels on each side
+        display.setCursor(CHARMARGIN + halfChars + 3, 56);                      //set the cursor position, add 3 pixels to make the text center
+    }
+    else {                                                                      //if the length of the text is odd
+        int halfText = centerLength / 2;                                        //get the number of characters on each side of the middle character (since it's odd)
+        int spaces = USABLECHARS - (halfText * 2);                              //continue like it was even
+        int halfSpaces = spaces / 2;
+        int halfChars = halfSpaces * 6;
+        display.setCursor(CHARMARGIN + halfChars, 56);                          //don't need to add the 3 pixels since it should already be center
+    }
+    display.print(center);                                                      //print the center text
     
     //right
-    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);
+    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);                     //right side designy stuff
     display.fillRect(120, 56, 8, 8, WHITE);
     
-    display.setTextColor(BLACK);
+    display.setTextColor(BLACK);                                                //print out the right indicator character, and "bold" it
     display.setCursor(121, 56);
     display.print(right);
     display.setCursor(120, 56);
     display.print(right);
-    //display.display();
 }
