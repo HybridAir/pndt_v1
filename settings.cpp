@@ -63,3 +63,12 @@ void settings::setMenu() {             //used to toggle whether the menu is disp
 bool settings::getMenu() {
     return menuActive;
 }
+
+byte settings::getActiveMode() {
+    if(menuActive) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
