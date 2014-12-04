@@ -31,6 +31,7 @@ class io {
         void monitorCharge();
         void processBatt();
         float getBatt();
+        byte getBattPercent();
         byte monitorBatt();
     private:
         Bounce btnL;
