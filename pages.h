@@ -14,9 +14,9 @@ class pages {
         void doPage();
         void debug();
         void scrollText();
+        void doBtn(byte btn);
 private:
     int x;
-    void drawBtnBar();
               
 };
 
