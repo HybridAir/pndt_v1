@@ -13,7 +13,7 @@ menus::menus() {
 }
 
 void menus::doMain() {
-    disp.drawBtnBar('v', '^');
+    disp.drawBtnBar('v', "Return", '^');
     drawList();
     display.display();
 }
