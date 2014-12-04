@@ -199,7 +199,17 @@ void io::processBatt() {                                                        
 }
 
 float io::getBatt() {                                                           //returns corrected battery voltage as a float
-    return 2.0*(batt * (AREF / 1024.0));                                        //convert the value to a true voltage and return it
+    return 2.0*(batt * (AREF / 1024.0));                                        //convert the value to a true voltage and return it    
+}
+
+byte io::getBattPercent() {                                                     //returns a rather bad battery percentage
+    if((getBatt()*100) > 415) {                                                 //if the voltage is above 4.15, assume it's about 100%
+        return 100;
+    }
+    else {
+        return (byte)((((getBatt()*100) - 345) / (float)(415 - 345)) * 100);    //4.15 = 100%, 3.45 = 0%
+    }  
+    //lipos are not linear as far as discharge goes, but I don't have the time to get this perfect right now
 }
 
 byte io::monitorBatt() {                                                        //***used to trigger low battery warnings, returns error level
