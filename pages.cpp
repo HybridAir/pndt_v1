@@ -3,6 +3,7 @@
 #include "pages.h"
 
 extern settings set;
+extern oled disp;
 extern io inout;
 extern rtcTime time;
 extern Adafruit_SSD1306 display;
@@ -23,7 +24,7 @@ void pages::doPage() {                                                          
 }
 
 void pages::scrollText() {
-    drawBtnBar();
+    disp.drawBtnBar('<', '>');
     display.setTextColor(WHITE);
     display.setTextSize(7);
       x = x - 1;
@@ -65,33 +66,14 @@ void pages::debug() {
     }
 }
 
-void pages::drawBtnBar() {
-    display.drawFastHLine(0, 55, display.width(), WHITE);
-    display.setTextSize(1);
-    
-    //left
-    display.fillTriangle(8, 56, 16, 56, 8, 64, WHITE);
-    display.fillRect(0, 56, 8, 8, WHITE);
-    
-    display.setTextColor(BLACK);
-    display.setCursor(2, 56);
-    display.print("<");
-    display.setCursor(3, 56);
-    display.print("<");
-    
-    //center
-    display.setTextColor(WHITE);
-    display.setCursor(52, 56);
-    display.print("Menu");
-    
-    //right
-    display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);
-    display.fillRect(120, 56, 8, 8, WHITE);
-    
-    display.setTextColor(BLACK);
-    display.setCursor(121, 56);
-    display.print(">");
-    display.setCursor(120, 56);
-    display.print(">");
-    //display.display();
+void pages::doBtn(byte btn) {
+    if(btn == 1) {       //left button was pressed
+        set.prevPage();
+    }
+    else if(btn == 2) {     //center button
+        set.setMenu();
+    }
+    else if(btn == 4) {      //right button   
+        set.nextPage();
+    }
 }
