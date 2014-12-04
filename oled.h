@@ -15,6 +15,8 @@
 #define OLED_CS     6
 #define OLED_RESET  12
 #define OLED_WIDTH  128
+#define USABLECHARS 16
+#define CHARMARGIN  16
 
 
 class oled {
@@ -22,7 +24,7 @@ class oled {
         oled();
         void begin();
         void dispMon();
-        void drawBtnBar(char left, char right);
+        void drawBtnBar(char left, String center, char right);
 private:
     
               
