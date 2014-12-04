@@ -16,6 +16,7 @@ class settings {
         void prevPage();
         void setMenu();
         bool getMenu();
+        byte getActiveMode();
 private:
     byte mode;
     byte currentPage;
