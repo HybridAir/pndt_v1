@@ -8,6 +8,8 @@
 #include "rtcTime.h"
 #include "settings.h"
 
+#define BARDELAY 1000
+
 class pages {
     public:
         pages();
@@ -20,6 +22,9 @@ class pages {
         void drawBattery(byte x, byte y);
         void drawBattBar(byte x, byte y, byte bar);
         int x;
+        
+        unsigned long previousMillis; 
+        bool barActive;
               
 };
 
