@@ -12,11 +12,14 @@ class pages {
     public:
         pages();
         void doPage();
-        void debug();
-        void scrollText();
         void doBtn(byte btn);
-private:
-    int x;
+    private:
+        void debug();
+        void scrollText();        
+        void charge();
+        void drawBattery(byte x, byte y);
+        void drawBattBar(byte x, byte y, byte bar);
+        int x;
               
 };
 
