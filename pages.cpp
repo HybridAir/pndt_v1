@@ -12,6 +12,8 @@ extern Adafruit_SSD1306 display;
 
 pages::pages() {
     x = 130;
+    previousMillis = 0;                                                         //stores the last time the battery average was taken
+    barActive = false;
 }
 
 void pages::doPage() {                                                          //***checks with page needs to be displayed, and prepares to display it
@@ -75,6 +77,7 @@ void pages::charge() {
     display.println("Battery");
     display.setTextSize(1);
     display.setCursor(37, 16);
+    
     switch(inout.getCharge()) {
         case 0:
             display.println("Unplugged");
@@ -116,28 +119,64 @@ void pages::drawBattery(byte x, byte y) {                                       
     display.drawFastVLine(x + 31, y + 5, 44, WHITE);                            //right line
     display.drawFastHLine(x, y + 6, 32, WHITE);                                 //top line
     
-    display.fillRect(x + 8, y, 17, 6, WHITE);                                   //top cap thing
+    display.fillRect(x + 8, y, 17, 6, WHITE);                                   //top cap thing     
     
-//    display.fillRect(x + 4, y + 9, 25, 11, WHITE);
-//    
-//    //display.fillRect(x + 3, y + 21, 27, 12, WHITE);
-//    display.fillRect(x + 4, y + 22, 25, 11, WHITE);
-//    
-//    
-//    
-////    display.fillRect(x + 10, y + 34, 20, 12, WHITE); 
-////    display.fillRect(x + 3, y + 34, 7, 4, WHITE);
-////    display.fillTriangle(x + 3, y + 37, x + 9, y + 44, x + 9, y + 37, WHITE);
-//    
-//    display.fillRect(x + 10, y + 35, 19, 10, WHITE); 
-//    display.fillRect(x + 4, y + 35, 7, 4, WHITE);
-//    display.fillTriangle(x + 4, y + 37, x + 9, y + 43, x + 9, y + 37, WHITE);   
-    
-    drawBattBar(x, y, 2);
-    drawBattBar(x, y, 3);
+    if(inout.getCharge() == 1) {                                                //check if the device is charging    
+        //the following is used to blink the highest possible battery bar while charging
+        bool blink = false;                                                     //get the timer variable going
+        unsigned long currentMillis = millis();                                 //get the current time
+        if(currentMillis - previousMillis > BARDELAY) {                         //check if we have waited long enough
+            previousMillis = currentMillis;                                     //save the current time as the previous amount
+            blink = true;                                                       //let a battery bar blink
+        }
+        
+        if(blink) {                                                             //if it's time to blink a battery bar
+            if(barActive) {                                                     //if the bar is lit
+                barActive = false;                                              //turn the bar off
+            }
+            else {                                                              //if the bar is not lit
+                barActive = true;                                               //turn the bar on
+            }
+        }
+        
+        if(inout.getBattPercent() >= 66) {                                      //if the battery is at least 2/3 full      
+            if(barActive) {                                                     //display the top battery bar if it's time to
+                drawBattBar(x, y, 1);                                           
+            }
+            //draw the bottom two battery bars normally
+            drawBattBar(x, y, 2);
+            drawBattBar(x, y, 3);
+        }
+        else if (inout.getBattPercent() >= 33) {                                //if the battery is at least 1/3 full   
+            if(barActive) {                                                     //display the middle battery bar if it's time to
+                drawBattBar(x, y, 2);     //blink it
+            }
+            drawBattBar(x, y, 3);                                               //draw the last battery bar normally
+        }
+        else {                                                                  //if the battery is not dead yet
+            if(barActive) {                                                     //display the last battery bar if it's time to
+                drawBattBar(x, y, 3);
+            }
+        }
+    }   
+    else {                                                                      //if the device is not charging
+        if(inout.getBattPercent() >= 66) {                                      //if the battery is at least 2/3 full
+            //show all bars normally
+            drawBattBar(x, y, 1);
+            drawBattBar(x, y, 2);
+            drawBattBar(x, y, 3);
+        }
+        else if (inout.getBattPercent() >= 33) {                                //if the battery is at least 2/3 full
+            drawBattBar(x, y, 2);
+            drawBattBar(x, y, 3);
+        }
+        else {                                                                  //if the battery is not dead yet
+            drawBattBar(x, y, 3);
+        }
+    }   
 }
 
-void pages::drawBattBar(byte x, byte y, byte bar) {                             //used to draw a bar in the battery, needs the outline's position and the bar number
+void pages::drawBattBar(byte x, byte y, byte bar) {                             //used to draw a bar in the battery, needs the outline's position
     switch(bar) {
         case 1:
             display.fillRect(x + 4, y + 9, 25, 11, WHITE);
@@ -152,50 +191,6 @@ void pages::drawBattBar(byte x, byte y, byte bar) {                             
             break;
     } 
 }
-
-
-
-
-//void pages::drawBattery(byte x, byte y) {
-//    byte width = 82;
-//    
-//    display.drawRoundRect(x + 1, y + 1, width, 26, 5, WHITE);           //batt  20
-//    display.drawRoundRect(x + 1, y + 1, width, 26, 7, WHITE);
-//    display.drawRoundRect(x, y, width + 2, 28, 7, WHITE);               //22
-//    
-//    //80
-//    //5 2px spaces
-//    //80 - 10 = 70
-//    //5 14 wide bars
-//    
-//    display.fillRoundRect(x + width, y + 8, 8, 12, 4, WHITE);       //batt cap      8
-//    display.fillRect(x + width, y + 8, 4, 12, WHITE);                               //8
-//    
-//    
-//    drawBattBar(x, y, 1);
-//    
-////    display.fillRoundRect(x + 4, y + 4, 17, 20, 4, WHITE);          //batt 1
-////    display.fillRect(x + 8, y + 4, 10, 20, WHITE);
-//    //display.fillRect(x + 14, y + 4, 4, 20, BLACK);
-//    
-//}
-
-//void pages::drawBattBar(byte x, byte y, byte bar) {         //add 19
-//    display.fillRoundRect(x + 4, y + 4, 17, 20, 4, WHITE);          //batt 1
-//    display.fillRect(x + 8, y + 4, 10, 20, WHITE);
-//    
-//    display.fillRoundRect(x + 23, y + 4, 17, 20, 4, WHITE);          //batt 1
-//    display.fillRect(x + 27, y + 4, 10, 20, WHITE);
-//    
-//    display.fillRoundRect(x + 42, y + 4, 17, 20, 4, WHITE);          //batt 1
-//    display.fillRect(x + 46, y + 4, 10, 20, WHITE);
-//    
-//    display.fillRoundRect(x + 61, y + 4, 17, 20, 4, WHITE);          //batt 1
-//    display.fillRect(x + 65, y + 4, 10, 20, WHITE);
-//    
-//    display.fillRoundRect(x + 61, y + 4, 17, 20, 4, WHITE);          //batt 1
-//    display.fillRect(x + 65, y + 4, 10, 20, WHITE);
-//}
 
 void pages::doBtn(byte btn) {
     if(btn == 1) {       //left button was pressed
