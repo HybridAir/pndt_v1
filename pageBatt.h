@@ -8,6 +8,7 @@ class pageBatt {
     public:
         pageBatt();
         void showPage();
+        String getTitle();
         void doPage();
         void doBtn(byte btn);
     private:       
