@@ -8,6 +8,7 @@ class pageText {
     public:
         pageText();
         void showPage();
+        String getTitle();
         void scrollText();
     private:       
         int position;
