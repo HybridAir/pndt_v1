@@ -13,19 +13,63 @@ extern Adafruit_SSD1306 display;
 pages::pages() {
     x = 130;
     previousMillis = 0;                                                         //stores the last time the battery average was taken
+    previousMillis2 = 0;                                                         //stores the last time the battery average was taken
     barActive = false;
+    prevPage = set.getPage();                                                //set the first current page, it will be the default in settings
+    showPage = true;                                                            //don't need to show the title page upon power up
 }
 
+//check if there's a new page first
+//if there is, reset the title timer display the title
+//if the title timer is up, allow the page to appear (set a variable)
+
+
 void pages::doPage() {                                                          //***checks with page needs to be displayed, and prepares to display it
-    switch(set.getPage()) {
+    byte currentPage = set.getPage();                                           //get the current page   
+    if(currentPage != prevPage) {                                               //if the page has changed since it was last checked      
+        prevPage = currentPage;                                                 //save the new page       
+        previousMillis2 = millis();                                             //reset the title timer
+        showPage = false;                                                       //need to show the title now
+    }
+    if(!showPage) {                                                             //if the title needs to be shown
+        doTitle(currentPage);                                                   //show the title for the current page   
+        
+        //check the title delay timer
+        unsigned long currentMillis = millis();                                 //get the current time
+        if(currentMillis - previousMillis2 > TITLEDELAY) {                      //if we have looked at the title long enough
+            showPage = true;                                                    //the page can be shown now
+        }
+    }
+    else {                                                                      //the page can be shown
+        switch(currentPage) {                                                   //show the specific page
+            case 0:
+                scrollText();
+                break;
+            case 1:
+                debug();
+                break;
+            case 2:
+                charge();
+                break;
+        }
+    }
+}
+
+void pages::doTitle(byte page) {            //used to display a page's title before displaying the page
+    display.setTextColor(WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 0);
+    
+    //the following switch case will be replaced with the page giving it its title or whatever
+    switch(page) {               //show the page
         case 0:
-            scrollText();
+            display.println("0 scrolltext");
             break;
         case 1:
-            debug();
+            display.println("1 debug");
             break;
         case 2:
-            charge();
+            display.println("2 charge");
             break;
     }
 }
