@@ -16,6 +16,10 @@ void pageBatt::showPage() {
     charge();
 }
 
+String pageBatt::getTitle() {
+    return "Battery";
+}
+
 void pageBatt::charge() {
     disp.drawBtnBar('<', "Menu", '>');
     display.setCursor(37, 0);
