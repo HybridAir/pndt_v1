@@ -8,12 +8,19 @@ extern io inout;
 extern Adafruit_SSD1306 display;
 
 pageBatt::pageBatt() {
-    previousMillis = 0;                                                         //stores the last time the battery average was taken
-    barActive = false;
+    resetVars();
 }
 
-void pageBatt::showPage() {
+void pageBatt::showPage(bool newPage) {
+    if(newPage) {
+        resetVars();
+    }
     charge();
+}
+
+void pageBatt::resetVars() {
+    previousMillis = 0;                                                         //stores the last time the battery average was taken
+    barActive = false;
 }
 
 String pageBatt::getTitle() {
