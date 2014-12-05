@@ -41,7 +41,10 @@ void pageBatt::powerCheck() {                                                   
             battWarn(true);                                                     //display the warning            
             delay(WARNDELAY);                                                   //wait for WARNDELAY
             inout.turnOff();                                                    //force the device off since it needs to charge
-        }    
+        }
+        else if(inout.getCharge() == 1) {                                         //if the device was just turned on because it was plugged into usb
+            set.setPage(2);
+        }
     }   
     else if(inout.monitorBatt() == 2) {                                         //if the device was operating normally and the battery died
         battWarn(true);                                                         //display the warning            
