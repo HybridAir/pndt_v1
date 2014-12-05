@@ -14,6 +14,10 @@ void pageText::showPage() {
     scrollText();
 }
 
+String pageText::getTitle() {
+    return "Message";
+}
+
 void pageText::scrollText() {
     disp.drawBtnBar('<', "Menu", '>');
     display.setTextColor(WHITE);
