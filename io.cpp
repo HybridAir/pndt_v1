@@ -224,7 +224,7 @@ byte io::monitorBatt() {                                                        
         else if(getBatt() < LOWBATT && getBatt() >= DEADBATT) {                 //if the battery is low but not dead
             return 1;                                                           //return the low warning value
         }
-        else if(getCharge != 0){                                                //the battery is probably dead (and not charging)
+        else if(getCharge() != 0) {                                             //the battery is probably dead (and not charging)
             return 2;                                                           //return the dead warning value
         }
     }
