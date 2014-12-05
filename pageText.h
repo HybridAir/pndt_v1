@@ -8,7 +8,9 @@ class pageText {
     public:
         pageText();
         void showPage();
+        void scrollText();
     private:       
+        int position;
               
 };
 
