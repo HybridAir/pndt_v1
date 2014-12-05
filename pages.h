@@ -11,7 +11,7 @@
 #include "pageText.h"
 
 #define BARDELAY 1000
-#define TITLEDELAY 1000
+#define TITLEDELAY 1250
 
 class pages {
     public:
@@ -25,7 +25,8 @@ class pages {
         //int x;
         byte prevPage;
         bool showPage;
-        unsigned long previousMillis2;             
+        unsigned long prevTitleTime;   
+        byte newPage;
 };
 
 #endif
