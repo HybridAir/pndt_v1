@@ -7,10 +7,17 @@ extern oled disp;
 extern Adafruit_SSD1306 display;
 
 pageText::pageText() {
+    resetVars();
+}
+
+void pageText::resetVars() {
     position = 130;
 }
 
-void pageText::showPage() {
+void pageText::showPage(bool newPage) {
+    if(newPage) {
+        resetVars();
+    }
     scrollText();
 }
 
