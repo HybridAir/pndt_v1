@@ -48,7 +48,7 @@ void settings::prevPage() {     //need to make it so the page only gets set once
 }
 
 void settings::setPage(byte in) {
-    
+    currentPage = in;
 }
 
 void settings::setMenu() {             //used to toggle whether the menu is displayed
