@@ -7,10 +7,11 @@
 class pageText {
     public:
         pageText();
-        void showPage();
+        void showPage(bool newPage);
         String getTitle();
         void scrollText();
     private:       
+        void resetVars();
         int position;
               
 };
