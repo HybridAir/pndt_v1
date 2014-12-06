@@ -4,11 +4,12 @@
 
 extern settings set;
 extern menus menu;
-//extern io inout;
+extern io inout;
 //extern rtcTime time;
 
 extern Adafruit_SSD1306 display;
 extern pages page;
+extern pageBatt batt;
 
 //function that is called all the time in main to update the display
 //"page" functionality
@@ -20,17 +21,26 @@ extern pages page;
 oled::oled() {   
   display.setTextSize(4);
   display.setTextColor(WHITE);
-  display.setTextWrap(false);
-  
-  
+  display.setTextWrap(false); 
 }
 
 void oled::begin() {
-          display.begin(SSD1306_SWITCHCAPVCC);
-  display.display();
-  
-  delay(1000);
-  display.clearDisplay();   // clears the screen and buffer
+    display.begin(SSD1306_SWITCHCAPVCC);                                        //turn the display on
+    display.display();                                                          //show the splash screen
+
+    //prepare the startup timer
+    unsigned long previousMillis = millis();                                    
+    unsigned long currentMillis = 0;
+    while(currentMillis < previousMillis + 1000) {                              //while we're waiting for 1 second to elapse
+        currentMillis = millis();                                               //keep checking the time
+        //stabilize the temperature and battery levels so they're correct
+        inout.processTmp(true);
+        inout.processBatt(true);
+        //also give the user some time to view the splash screen
+    }
+
+    display.clearDisplay();
+    batt.powerCheck();                                                          //need to check the battery and display any priority warnings
 }
 
 void oled::dispMon() {
@@ -42,8 +52,7 @@ void oled::dispMon() {
     //includes the button bar and probably battery warnings
     //last line is a display.display
     display.clearDisplay();
-    //page.debug();
-    //drawBtnBar();
+    batt.powerCheck();
     if(set.getMenu()) {         //check if the menu needs to be displayed
         menu.doMain();      //do the main menu page
     }
