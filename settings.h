@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
-#define NUMPAGES 2
+#define NUMPAGES 3
 
 class settings {
     public:
