@@ -9,9 +9,10 @@
 
 #include "pageBatt.h"
 #include "pageText.h"
+#include "pageHome.h"
 
 #define BARDELAY 1000
-#define TITLEDELAY 1250
+#define TITLEDELAY 1000
 
 class pages {
     public:
@@ -27,6 +28,7 @@ class pages {
         bool showPage;
         unsigned long prevTitleTime;   
         byte newPage;
+        byte justReset;
 };
 
 #endif
