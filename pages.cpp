@@ -1,6 +1,6 @@
 //handles overall page control
 
-//TODO: add automatic charging page, reset page stuff when they get switched to (scrolling position, etc)
+//TODO: auto holiday message
 
 #include "pages.h"
 
@@ -12,6 +12,7 @@ extern Adafruit_SSD1306 display;
 
 pageBatt batt;
 pageText text;
+pageHome home;
 
 pages::pages() {
     prevPage = set.getPage();                                                   //gets the default first page from settings
@@ -38,12 +39,15 @@ void pages::doPage() {                                                          
     else {                                                                      //the page can be shown
         switch(currentPage) {                                                   //show the specific page
             case 0:
-                text.showPage(newPage);
+                home.showPage(newPage);
                 break;
             case 1:
-                debug();
+                text.showPage(newPage);
                 break;
             case 2:
+                debug();
+                break;
+            case 3:
                 batt.showPage(newPage);
                 break;
         }
@@ -53,19 +57,23 @@ void pages::doPage() {                                                          
 
 void pages::doTitle(byte page) {                                                //used to display a page's title before displaying the page
     disp.drawBtnBar('<', "Menu", '>');
-    display.setTextColor(WHITE);
+    
+    //get the text formatting set up
+    display.setTextColor(WHITE);                                                
     display.setTextSize(2);
     display.setCursor(0, 0);
     
-    //the following switch case will be replaced with the page giving it its title or whatever
-    switch(page) {               //show the page
+    switch(page) {                                                              //show a page title
         case 0:
-            display.println(text.getTitle());
+            display.println(home.getTitle());
             break;
         case 1:
-            display.println("debug");
+            display.println(text.getTitle());
             break;
         case 2:
+            display.println("debug");
+            break;
+        case 3:
             display.println(batt.getTitle());
             break;
     }
