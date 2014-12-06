@@ -9,7 +9,8 @@
 #include "pages.h"
 #include "settings.h"
 #include "menus.h"
-
+#include "io.h"
+#include "pageBatt.h"
 
 #define OLED_DC     4
 #define OLED_CS     6
