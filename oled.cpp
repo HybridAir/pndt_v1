@@ -31,7 +31,7 @@ void oled::begin() {
     //prepare the startup timer
     unsigned long previousMillis = millis();                                    
     unsigned long currentMillis = 0;
-    while(currentMillis < previousMillis + 1000) {                              //while we're waiting for 1 second to elapse
+    while(currentMillis < previousMillis + 2000) {                              //while we're waiting for 1 second to elapse
         currentMillis = millis();                                               //keep checking the time
         //stabilize the temperature and battery levels so they're correct
         inout.processTmp(true);
