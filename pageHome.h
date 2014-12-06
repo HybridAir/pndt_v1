@@ -11,6 +11,11 @@ class pageHome {
         void showPage(bool newPage);
         String getTitle();
     private:       
+        void setHour(byte in);
+        byte position;
+        byte prevHour;
+        byte x;
+        unsigned long previousMillis;
               
 };
 
