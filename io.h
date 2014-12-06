@@ -24,12 +24,12 @@ class io {
         io();
         void ioMon();
         byte btnMon();
-        void processTmp();
+        void processTmp(bool stabilizing);
         float getTmp();
         void turnOff();
         byte getCharge();
         void monitorCharge();
-        void processBatt();
+        void processBatt(bool stabilizing);
         float getBatt();
         byte getBattPercent();
         byte monitorBatt();
@@ -49,6 +49,7 @@ class io {
         byte batIndex;
         int batTotal;
         bool battStable;
+        
         bool tmpStable;
         
         bool active;    //temporary
