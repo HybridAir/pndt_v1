@@ -43,8 +43,8 @@ io::io() {                                                                      
 }
 
 void io::ioMon() {                                                              //***monitors IO, keeps background values up to date
-    processTmp();
-    processBatt();
+    processTmp(false);
+    processBatt(false);
     monitorCharge();
 }
 
@@ -70,15 +70,18 @@ byte io::btnMon() {                                                             
     return out;                                                                 //returns the button status (0 = none, 1 = btnl, 3 = btnl AND btnc, etc)   
 }
 
-void io::processTmp() {                                                         //***keeps a running average of the temperature input  
+void io::processTmp(bool stabilizing) {                                                         //***keeps a running average of the temperature input  
     tmpStable = false;                                                          //assume temperature average is unstable
     bool checkAvg = false;                                                      //don't allow getting a new average yet
     
     //the temperature average is kept clean by using a delay
     if(tmp <= (lastTmp + 0.01) && tmp >= (lastTmp - 0.01)) {                //check if the average battery voltage is +- .01 of the previous value
-        tmpStable = true;                                                      //battery voltage can be considered stable
+        if(!stabilizing) {
+            tmpStable = true;                                                  //battery voltage can be considered stable
+        }
     }
-    else {                                                                      //the average voltage deviates more than +- .01
+    else {     
+        //the average voltage deviates more than +- .01
         tmpStable = false;                                                     //battery voltage is considered unstable
     }
 
@@ -159,13 +162,15 @@ void io::monitorCharge() {                                                      
     }  
 }
 
-void io::processBatt() {                                                        //***keeps a running average of the battery voltage 
+void io::processBatt(bool stabilizing) {                                                        //***keeps a running average of the battery voltage 
     battStable = false;                                                         //assume battery average is unstable
     bool checkAvg = false;                                                      //don't allow getting a new average yet
     
     //the battery voltage average is kept clean by using a delay
     if(batt <= (lastBatt + 0.01) && batt >= (lastBatt - 0.01)) {                //check if the average battery voltage is +- .01 of the previous value
-        battStable = true;                                                      //battery voltage can be considered stable
+        if(!stabilizing) {
+            battStable = true;                                                      //battery voltage can be considered stable
+        }
     }
     else {                                                                      //the average voltage deviates more than +- .01
         battStable = false;                                                     //battery voltage is considered unstable
