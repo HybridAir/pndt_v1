@@ -47,6 +47,7 @@ void pageBatt::powerCheck() {                                                   
         }
     }   
     else if(inout.monitorBatt() == 2) {                                         //if the device was operating normally and the battery died
+        display.clearDisplay();
         battWarn(true);                                                         //display the warning            
         delay(WARNDELAY);                                                       //wait for WARNDELAY
         inout.turnOff();                                                        //force the device off since it needs to charge
