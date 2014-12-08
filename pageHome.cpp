@@ -10,64 +10,82 @@ extern Adafruit_SSD1306 display;
 struct Scroller
 {
     public:
-        byte prevDigit;
+        byte currentD0;
+        byte currentD1;
         byte position;
-        bool timeToScroll;
+        byte offset;
         
-        void pageHome::scrollTime(byte x, byte y, byte size, byte input) {        //scrolls one part of the time, accepts 1 to 2 digits
-            byte digit0 = input / 10;
-            byte digit1 = input - (digit0 * 10);
+        void scrollTime(byte x, byte y, byte size, byte input) {      //scrolls one section of the time, accepts 1 to 2 digits
+            offset = FONTHEIGHT*size;
+            byte digit0 = input / 10;                                           //the digit in the tens place
+            byte digit1 = input - (digit0 * 10);                                //the digit in the ones place    
             
-            scrollHour.scrollDigit(x, y, size, digit0);
-            scrollMin.scrollDigit(x + (FONTWIDTH * size), y, size, digit1);    
-            //this function will keep track of each previous digit, not the one xdirectly below
-            
+            if(currentD0 != digit0 || currentD1 != digit1 ) {                   //if there are any new digits
+               //figure out which one needs scrolling and which one doesn't
+                if(currentD0 != digit0) {                                       //if it's digit0
+                     scrollDigit(x, y, size, currentD0, digit0);                //go and scroll it
+                }
+                else {                                                          //if it's the same, just print it in the default position
+                    display.setTextSize(size);
+                    display.setCursor(x, y);
+                    display.print(currentD0);
+                }
 
-            
-            
+                if(currentD1 != digit1) {                                       //if it's digit1                           
+                     scrollDigit(x + (FONTWIDTH * size), y, size, currentD1, digit1);
+                }
+                else {
+                    display.setTextSize(size);
+                    display.setCursor(x + (FONTWIDTH * size), y);
+                    display.print(currentD1);
+                }
+
+                position++;                                                     //increase the scroll position, since there is going to be one scrolling in here
+
+                if(position > offset + y) {                                     //if we are done moving/scrolling the digit
+                    position = 0 + y;                                           //reset the y position
+                    //reset the current digit
+                    if(currentD0 != digit0) {
+                        currentD0 = digit0;
+                    }
+                    if(currentD1 != digit1) {
+                        currentD1 = digit1;
+                    }
+                }
+            }    
+            else {                                                              //if the digits are the same
+                //just keep them in their places
+                display.setTextSize(size);
+                display.setTextColor(WHITE);
+                display.setCursor(x, y);
+                display.print(currentD0);  
+                display.setCursor(x + (FONTWIDTH * size), y);
+                display.print(currentD1);                                       
+            }       
         }
-        
-        
-        
-        void scrollDigit(byte x, byte y, byte size, byte input) {       //scrolls a single digit
+   
+        void scrollDigit(byte x, byte y, byte size, byte currentD, byte newD) { //scrolls a single digit
             //get formatting out of the way
             display.setTextColor(WHITE);
             display.setTextSize(size);
-            byte offset = FONTHEIGHT*size;                                      //get the actual fontsize
 
-            if(prevDigit != input) {                                             //if the input time is different than the last one, then assume that it's time to scroll
-                position++;                                                     //increase the y position, it will move the numbers down, creating the animation
-                display.setCursor(x, position);                                 //set the cursor for the previous/old/current number
-                display.print(prevDigit);                                        //print the previous number in its new position (down a bit for the animation)
-                display.fillRect(x, y + offset, FONTWIDTH*size, offset, BLACK); //draw a black rectangle mask ON TOP of it to hide the old number as it moves down
-                display.setCursor(x, position - (offset + 1));                  //prepare the cursor to bring the new number down
-                display.print(input);                                           //draw the new number above the previous one, it will be moved down in due time
-                display.fillRect(x, y - (offset + 1), FONTWIDTH*size, offset, BLACK);     //draw a black rectangle mask ON TOP of it to hide the new number as it moves down
-
-                if(position > offset + y) {                                     //if we are done moving/scrolling the number
-                    position = 0 + y;                                           //reset the y position
-                    prevDigit = input;                                           //set the previous time to the new number we were given
-                    timeToScroll = false;                                       //don't need to scroll anything again until the next "pulse"
-                }
-            }    
-            else {                                                              //if we dont need to scroll anything
-                //just keep the old input number in the default place
-                display.setTextColor(WHITE);
-                display.setCursor(x, y);
-                display.print(prevDigit);                                        //only show the previous time since we haven't scrolled to the new one yet
-            }
+            display.setCursor(x, position);                                     //set the cursor for the previous/old/current number
+            display.print(currentD);                                            //print the current number in its new position (down a bit for the animation)
+            display.fillRect(x, y + offset, FONTWIDTH*size, offset, BLACK);     //draw a black rectangle mask ON TOP of it to hide the old number as it moves down
+            display.setCursor(x, position - (offset + 1));                      //prepare the cursor to bring the new number down
+            display.print(newD);                                                //draw the new number above the previous one, it will be moved down in due time
+            display.fillRect(x, y - (offset + 1), FONTWIDTH*size, offset, BLACK);     //draw a black rectangle mask ON TOP of it to hide the new number as it moves down
         }
-        
-} scrollHour, scrollMin;
+       
+} scrollHour, clock;
 
 
 pageHome::pageHome() {
-    scrollHour.position = 0;
-    scrollHour.prevDigit = 0;
+    clock.position = 0;
+    clock.currentD0 = 0;
     previousMillis = 0;
     x = 0;
     y = 5;
-    scrollHour.timeToScroll = true;
 }
 
 void pageHome::showPage(bool newPage) {
@@ -78,13 +96,10 @@ void pageHome::showPage(bool newPage) {
             if(currentMillis - previousMillis > 1000) {                         //check if we have waited long enough
                 previousMillis = currentMillis;                                     //save the current time as the previous amount
                 increment = true;                                                       //let a battery bar blink
-                scrollHour.timeToScroll = true;
+                //scrollHour.timeToScroll = true;
             }
     
-    //setHour(x);
-    //scrollTime(0, 0, 4, x);
-    scrollTime(0, 0, 4, x);
-    //scrollMin.doit(40, 0, 4, y);
+    clock.scrollTime(0, 0, 4, x);
     
     if(increment) {
         x++;
@@ -133,16 +148,6 @@ void pageHome::doTime() {
     //get the current time
     //give each part to the scroller
 }
-
-
-
-        void pageHome::scrollTime(byte x, byte y, byte size, byte input) {        //scrolls one part of the time, accepts 1 to 2 digits
-            byte digit0 = input / 10;
-            byte digit1 = input - (digit0 * 10);
-            
-            scrollHour.scrollDigit(x, y, size, digit0);
-            scrollMin.scrollDigit(x + (FONTWIDTH * size), y, size, digit1);                 
-        }
 
 
 //void pageHome::scrollTime(byte x, byte y, byte size, byte input) {
