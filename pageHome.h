@@ -4,17 +4,18 @@
 #include <Arduino.h>
 #include "oled.h"
 
+#define FONTHEIGHT 8
+#define FONTWIDTH 6
+
 
 class pageHome {
     public:
         pageHome();
         void showPage(bool newPage);
         String getTitle();
-    private:       
-        void setHour(byte in);
-        byte position;
-        byte prevHour;
+    private:    
         byte x;
+        byte y;
         unsigned long previousMillis;
               
 };
