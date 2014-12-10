@@ -8,7 +8,7 @@ extern oled disp;
 extern io inout;
 extern Adafruit_SSD1306 display;
 
-struct Scroller
+struct Scroller               //used for animating the time
 {
     public:
         byte currentD0;
@@ -85,16 +85,25 @@ pageHome::pageHome() {
     previousMillis = 0;
     x = 0;
     y = 5;
+    currentData = 0;
+    setNewData = false;
+    newData = 1;
+    dataPos = 0;
+    scrollingOut = true;
 }
 
 void pageHome::showPage(bool newPage) {
     
+    //if(new)
+    //get time and update numbers before showing anything
+    
     //temporary timer for emulating system time
     bool increment = false;
     unsigned long currentMillis = millis();                                 //get the current time
-            if(currentMillis - previousMillis > 1000) {                         //check if we have waited long enough
+            if(currentMillis - previousMillis > 5000) {                         //check if we have waited long enough
                 previousMillis = currentMillis;                                     //save the current time as the previous amount
                 increment = true;                                                       //let a battery bar blink
+                setNewData = true;
             }
     
     if(increment) {
@@ -121,13 +130,84 @@ void pageHome::showPage(bool newPage) {
     
     display.drawFastHLine(0, 33, 128, WHITE); 
     
-    display.setCursor(0, 37);
-    display.setTextSize(2);
-    display.print("01.01.15");
+    //display.setCursor(0, 37);
+    //display.setTextSize(2);
+    //display.print("01.01.15");
+    
+    scrollData(0, 37);
+    //drawData(0, 37, newData);
+    
+    //scroll other stuff here
 
+    display.drawFastHLine(0, 33, 128, WHITE); 
     disp.drawBtnBar('<', "Menu", '>');   
 }
 
 String pageHome::getTitle() {
     return "Home";
 }
+
+void pageHome::scrollData(byte x, byte y) {
+display.setTextWrap(false);
+    
+    if(setNewData) {
+        setNewData = false;
+        newData++;
+       if(newData > MAXDATA) {
+            newData = 0;
+        }
+    }
+    
+    if(currentData != newData) {
+        //scroll the new data in
+        dataPos++; 
+        
+        if(scrollingOut) {
+            drawData(x, y, currentData);
+            display.fillRect(x, y, 128, dataPos, BLACK);     //draw a black rectangle mask ON TOP of it to hide the old number as it moves down
+        }
+        else {
+            drawData(x, y, newData);
+            display.fillRect(x, y + dataPos, 128, DATAHEIGHT - dataPos, BLACK);     //draw a black rectangle mask ON TOP of it to hide the old number as it moves down
+        }
+
+        if(dataPos > DATAHEIGHT) {                                     //if we are done moving/scrolling the digit
+            dataPos = 0;                                           //reset the y position
+            //currentData = newData;
+            if(scrollingOut) {
+                scrollingOut = false;
+            }
+            else {
+                scrollingOut = true;
+                currentData = newData;
+            }
+        }
+    }
+    else {
+        //keep it where it is but let it do stuff
+        drawData(x, y, currentData);
+    }
+}
+
+void pageHome::drawData(byte x, byte y, byte data) {            //used to draw a specific data
+    display.setTextColor(WHITE);
+    display.setTextSize(2);
+    display.setCursor(x, y);
+    
+    
+    switch(data) {
+        case 0:             //date
+            display.println("date");
+            break;
+        case 1:             //temp/batt
+            display.println("temp/batt");
+            break;
+        case 2:             //motd?
+            display.println("motd");
+            break;                
+    }
+}
+
+//data function needs a number do it knows which one to output, and wants a position
+//it needs to draw itself, cant return a string only
+//needs to know when to update
