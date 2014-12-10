@@ -44,10 +44,10 @@ void pages::doPage() {                                                          
             case 1:
                 text.showPage(newPage);
                 break;
+//            case 2:
+//                debug();
+//                break;
             case 2:
-                debug();
-                break;
-            case 3:
                 batt.showPage(newPage);
                 break;
         }
@@ -70,39 +70,39 @@ void pages::doTitle(byte page) {                                                
         case 1:
             display.println(text.getTitle());
             break;
+//        case 2:
+//            display.println("debug");
+//            break;
         case 2:
-            display.println("debug");
-            break;
-        case 3:
             display.println(batt.getTitle());
             break;
     }
 }
 
-void pages::debug() {
-        display.setCursor(0, 0);
-    display.setTextSize(1);
-    display.println(inout.getBatt());
-    display.println(inout.getTmp());
-    display.println(inout.btnMon());   
-    display.println(RTC.get());
-    display.println(now());
-    display.println(time.getDate());
-    //display.println(year());
-    display.println(time.getTime());
-    display.println(set.getrom());
-    if(inout.monitorBatt() == 1) {
-        display.setTextSize(1);
-        display.println("low batt");
-    }
-    else if(inout.monitorBatt() == 2) {
-        display.setTextSize(1);
-        display.println("batt depleted");
-        display.display();
-        delay(2000);
-        inout.turnOff();
-    }
-}
+//void pages::debug() {
+//        display.setCursor(0, 0);
+//    display.setTextSize(1);
+//    display.println(inout.getBatt());
+//    //display.println(inout.getTmp());
+//    //display.println(inout.btnMon());   
+//    display.println(RTC.get());
+//    display.println(now());
+//    //display.println(time.getDate());
+//    //display.println(year());
+//    //display.println(time.getTime());
+//    display.println(set.getrom());
+//    //if(inout.monitorBatt() == 1) {
+//    //    display.setTextSize(1);
+//    //    display.println("low batt");
+//    //}
+//    //else if(inout.monitorBatt() == 2) {
+//    //    display.setTextSize(1);
+//    //    display.println("batt depleted");
+//    //    display.display();
+//    //    delay(2000);
+//    //    inout.turnOff();
+//    //}
+//}
 
 void pages::doBtn(byte btn) {
     if(btn == 1) {       //left button was pressed
