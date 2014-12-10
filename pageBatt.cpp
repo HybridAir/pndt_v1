@@ -60,8 +60,8 @@ void pageBatt::battWarn(bool dead) {
     display.setCursor(37, height);
     display.setTextColor(WHITE);
     display.setTextSize(1);
-    display.print("My battery is");
-    display.setCursor(37, height + 8);
+    display.println("My battery is");
+    //display.setCursor(37, height + 8);
     if(dead) {
         display.print("depleted.");
     }
@@ -69,8 +69,8 @@ void pageBatt::battWarn(bool dead) {
         display.print("low.");
     }
     display.setCursor(37, height + 24);
-    display.print("Please connect");
-    display.setCursor(37, height + 32);
+    display.println("Please connect");
+    //display.setCursor(37, height + 32);
     if(dead) {
         display.print("me to USB.");
     }
@@ -157,7 +157,7 @@ void pageBatt::drawBattery(byte x, byte y, bool dead) {                         
                 }
             }
 
-            if(inout.getBattPercent() >= 66) {                                      //if the battery is at least 2/3 full      
+            if(inout.getBattBar() == 0) {                                      //if the battery is at least 2/3 full      
                 if(barActive) {                                                     //display the top battery bar if it's time to
                     drawBattBar(x, y, 1);                                           
                 }
@@ -165,7 +165,7 @@ void pageBatt::drawBattery(byte x, byte y, bool dead) {                         
                 drawBattBar(x, y, 2);
                 drawBattBar(x, y, 3);
             }
-            else if (inout.getBattPercent() >= 33) {                                //if the battery is at least 1/3 full   
+            else if (inout.getBattBar() == 1) {                                //if the battery is at least 1/3 full   
                 if(barActive) {                                                     //display the middle battery bar if it's time to
                     drawBattBar(x, y, 2);     //blink it
                 }
@@ -178,13 +178,13 @@ void pageBatt::drawBattery(byte x, byte y, bool dead) {                         
             }
         }   
         else {                                                                      //if the device is not charging
-            if(inout.getBattPercent() >= 66) {                                      //if the battery is at least 2/3 full
+            if(inout.getBattBar() == 0) {                                      //if the battery is at least 2/3 full
                 //show all bars normally
                 drawBattBar(x, y, 1);
                 drawBattBar(x, y, 2);
                 drawBattBar(x, y, 3);
             }
-            else if (inout.getBattPercent() >= 33) {                                //if the battery is at least 2/3 full
+            else if (inout.getBattBar() == 1) {                                //if the battery is at least 2/3 full
                 drawBattBar(x, y, 2);
                 drawBattBar(x, y, 3);
             }
