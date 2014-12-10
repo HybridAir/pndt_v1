@@ -193,33 +193,39 @@ void pageHome::drawData(byte x, byte y, byte data) {            //used to draw a
     display.setTextColor(WHITE);
     display.setTextSize(2);
     display.setCursor(x, y);
-    String date;
-    
+    byte emptyBars;
+    char dateSeparator = '.';
     
     switch(data) {
         case 0:             //date
-            date.concat(month());
-            date.concat('.');
-            date.concat(day());
-            date.concat('.');
-            date.concat(year());
-            display.print(date);
+            display.print(month());
+            display.print(dateSeparator);
+            display.print(day());
+            display.print(dateSeparator);
+            display.print(year());
             break;
         case 1:             //temp/batt
             display.print((int)inout.getTmp());
             display.print((char)247);
             display.print('C');
+            
+            //draw the battery outline
             display.drawRect(x + 96, y, 29, 14, WHITE);
             display.drawRect(x + 97, y + 1, 27, 12, WHITE);
             display.fillRect(x + 125, y + 3, 3, 8, WHITE);
-            
-            //display.fillRect(x + 99, y + 3, 4, 10, WHITE);
-            //display.fillRect(x + 99 + 11, y + 3, 4, 10, WHITE);
-            //display.fillRect(x + 99 + 22, y + 3, 4, 10, WHITE);
-
+                       
+            emptyBars = (inout.getBattBar() * 1);
+            for(byte i = 0; i < (3 - emptyBars); i++) {
+                drawBattBar(102, y, i);
+            }
             break;
         case 2:             //motd?
             display.println("Hello Worl");
             break;                
     }
 }
+    
+    void pageHome::drawBattBar(byte x, byte y, byte bar) {
+        byte xmult = bar * BARWIDTH;
+        display.fillRect(x + xmult, y, 7, BARWIDTH, WHITE);
+    }
