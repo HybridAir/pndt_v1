@@ -127,17 +127,8 @@ void pageHome::showPage(bool newPage) {
     display.setCursor(106, 2);
     display.setTextSize(1);
     display.print("PM");
-    
-    display.drawFastHLine(0, 33, 128, WHITE); 
-    
-    //display.setCursor(0, 37);
-    //display.setTextSize(2);
-    //display.print("01.01.15");
-    
+
     scrollData(0, 37);
-    //drawData(0, 37, newData);
-    
-    //scroll other stuff here
 
     display.drawFastHLine(0, 33, 128, WHITE); 
     disp.drawBtnBar('<', "Menu", '>');   
@@ -193,21 +184,33 @@ void pageHome::drawData(byte x, byte y, byte data) {            //used to draw a
     display.setTextColor(WHITE);
     display.setTextSize(2);
     display.setCursor(x, y);
+    String date;
     
     
     switch(data) {
         case 0:             //date
-            display.println("date");
+            date.concat(month());
+            date.concat('.');
+            date.concat(day());
+            date.concat('.');
+            date.concat(year());
+            display.print(date);
             break;
         case 1:             //temp/batt
-            display.println("temp/batt");
+            display.print((int)inout.getTmp());
+            display.print((char)247);
+            display.print("C");
+            display.drawRect(x + 96, y, 29, 14, WHITE);
+            display.drawRect(x + 97, y + 1, 27, 12, WHITE);
+            display.fillRect(x + 125, y + 3, 3, 8, WHITE);
+            
+            //display.fillRect(x + 99, y + 3, 4, 10, WHITE);
+            //display.fillRect(x + 99 + 11, y + 3, 4, 10, WHITE);
+            //display.fillRect(x + 99 + 22, y + 3, 4, 10, WHITE);
+
             break;
         case 2:             //motd?
-            display.println("motd");
+            display.println("Hello World");
             break;                
     }
 }
-
-//data function needs a number do it knows which one to output, and wants a position
-//it needs to draw itself, cant return a string only
-//needs to know when to update
