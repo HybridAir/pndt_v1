@@ -217,6 +217,19 @@ byte io::getBattPercent() {                                                     
     //lipos are not linear as far as discharge goes, but I don't have the time to get this perfect right now
 }
 
+byte io::getBattBar() {
+    byte percent = getBattPercent();
+    if(percent >= 66) {                                      //if the battery is at least 2/3 full
+        return 0;
+    }
+    else if (percent >= 33) {                                //if the battery is at least 2/3 full
+        return 1;
+    }
+    else {                                                                  //if the battery is not dead yet
+        return 2;
+    }
+}
+
 byte io::monitorBatt() {                                                        //***used to trigger low battery warnings, returns error level
     //check when the device is first turned on (fullscreen dead batt)
     //check while normal operation for low
