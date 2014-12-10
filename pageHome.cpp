@@ -16,10 +16,23 @@ struct Scroller               //used for animating the time
         byte position;
         byte offset;
         
-        void scrollTime(byte x, byte y, byte size, byte input) {      //scrolls one section of the time, accepts 1 to 2 digits
-            offset = FONTHEIGHT*size;
-            byte digit0 = input / 10;                                           //the digit in the tens place
-            byte digit1 = input - (digit0 * 10);                                //the digit in the ones place    
+        void updateVars(byte currentTime) {                                     //updates the time to the latest
+            currentD0 = extractD0(currentTime);
+            currentD1 = extractD1(currentTime);
+        }
+        
+        byte extractD0(byte input) {                                            //extracts the digit in the tens place
+            return input / 10;
+        }
+        
+        byte extractD1(byte input) {                                            //extracts the digit in the ones place
+            return input - (extractD0(input) * 10);
+        }
+        
+        void scrollTime(byte x, byte y, byte size, byte input) {                //scrolls one section of the time, accepts 1 to 2 digits
+            offset = FONTHEIGHT*size;            
+            byte digit0 = extractD0(input);                                     //the digit in the tens place
+            byte digit1 = extractD1(input);                                     //the digit in the ones place 
             
             if(currentD0 != digit0 || currentD1 != digit1 ) {                   //if there are any new digits
                //figure out which one needs scrolling and which one doesn't
@@ -82,7 +95,10 @@ struct Scroller               //used for animating the time
 
 
 pageHome::pageHome() {
-    previousMillis = 0;
+    updateVars();
+}
+
+void pageHome::updateVars() {
     x = 0;
     y = 5;
     currentData = 0;
@@ -90,39 +106,27 @@ pageHome::pageHome() {
     newData = 1;
     dataPos = 0;
     scrollingOut = true;
+    dataDelay = 0;
+    prevSec = second();
+    clockHour.updateVars(hour());
+    clockMin.updateVars(minute());
+    clockSec.updateVars(second());
 }
 
 void pageHome::showPage(bool newPage) {
     
-    //if(new)
-    //get time and update numbers before showing anything
-    
-    //temporary timer for emulating system time
-    bool increment = false;
-    unsigned long currentMillis = millis();                                 //get the current time
-            if(currentMillis - previousMillis > 5000) {                         //check if we have waited long enough
-                previousMillis = currentMillis;                                     //save the current time as the previous amount
-                increment = true;                                                       //let a battery bar blink
-                setNewData = true;
-            }
-    
-    if(increment) {
-        x++;
-        if(x > 59) {
-            x = 0;
-        }
-        increment = false;
-    }
-    
+    if(newPage) {                                                               //if the page is new
+        updateVars();                                                           //go update all the variables
+    }  
     
     display.setTextColor(WHITE);
     display.setTextSize(4);       
     display.setCursor(41, 0);
     display.print(":");
     
-    clockHour.scrollTime(0, 0, 4, x);           //hour
-    clockMin.scrollTime(58, 0, 4, x);          //min
-    clockSec.scrollTime(106, 14, 2, x);          //sec
+    clockHour.scrollTime(0, 0, 4, hour());           //hour
+    clockMin.scrollTime(58, 0, 4, minute());          //min
+    clockSec.scrollTime(106, 14, 2, second());          //sec
     
     display.setCursor(106, 2);
     display.setTextSize(1);
@@ -141,14 +145,19 @@ String pageHome::getTitle() {
 void pageHome::scrollData(byte x, byte y) {
 display.setTextWrap(false);
     
-    if(setNewData) {
-        setNewData = false;
-        newData++;
-       if(newData > MAXDATA) {
-            newData = 0;
+    if(second() != prevSec) {                                                   //if it has been a second
+        prevSec = second();                                                     //set this variable so the following code doesn't get spammed
+        dataDelay++;                                                            //increase the delay counter
+        if(dataDelay >= DATADELAY) {                                            //if it has been at least 5 seconds
+            //change the currently displayed data to the next one
+            dataDelay = 0;      
+            newData++;
+            if(newData > MAXDATA) {
+                newData = 0;
+            }
         }
     }
-    
+
     if(currentData != newData) {
         //scroll the new data in
         dataPos++; 
@@ -199,7 +208,7 @@ void pageHome::drawData(byte x, byte y, byte data) {            //used to draw a
         case 1:             //temp/batt
             display.print((int)inout.getTmp());
             display.print((char)247);
-            display.print("C");
+            display.print('C');
             display.drawRect(x + 96, y, 29, 14, WHITE);
             display.drawRect(x + 97, y + 1, 27, 12, WHITE);
             display.fillRect(x + 125, y + 3, 3, 8, WHITE);
@@ -210,7 +219,7 @@ void pageHome::drawData(byte x, byte y, byte data) {            //used to draw a
 
             break;
         case 2:             //motd?
-            display.println("Hello World");
+            display.println("Hello Worl");
             break;                
     }
 }
