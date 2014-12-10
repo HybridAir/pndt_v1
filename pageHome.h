@@ -6,6 +6,8 @@
 
 #define FONTHEIGHT 8
 #define FONTWIDTH 6
+#define MAXDATA 2
+#define DATAHEIGHT 18
 
 
 class pageHome {
@@ -16,7 +18,14 @@ class pageHome {
     private:    
         byte x;
         byte y;
+        byte currentData;
+        bool setNewData;
+        byte newData;
+        int dataPos;
+        bool scrollingOut;
         unsigned long previousMillis;
+        void scrollData(byte x, byte y);
+        void drawData(byte x, byte y, byte data);
               
 };
 
