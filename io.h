@@ -33,6 +33,7 @@ class io {
         float getBatt();
         byte getBattPercent();
         byte monitorBatt();
+        byte getBattBar();
     private:
         Bounce btnL;
         Bounce btnC;
