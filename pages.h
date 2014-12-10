@@ -20,7 +20,7 @@ class pages {
         void doPage();
         void doBtn(byte btn);
     private:
-        void debug();
+        //void debug();
         void scrollText();        
         void doTitle(byte page);
         //int x;
