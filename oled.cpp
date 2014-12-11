@@ -64,7 +64,7 @@ void oled::dispMon() {
 }
 
 void oled::drawBtnBar(char left, String center, char right) {
-    display.drawFastHLine(0, 55, display.width(), WHITE);                       //draw the separator line
+    display.drawFastHLine(0, 55, SSD1306_LCDWIDTH, WHITE);                       //draw the separator line
     display.setTextSize(1);
     
     //left
@@ -79,22 +79,7 @@ void oled::drawBtnBar(char left, String center, char right) {
     
     //center
     display.setTextColor(WHITE);  
-//    int centerLength = center.length();                                         //get the length of the center text
-//    if((centerLength % 2) == 0) {                                               //if the length of the text is even
-//        int spaces = USABLECHARS - centerLength;                                //subtract the text length from the number of usable characters to get the number of empty spaces
-//        int halfSpaces = spaces / 2;                                            //divide the above by two to get the number of empty spaces on each side of the text
-//        int halfChars = halfSpaces * 6;                                         //multiply the above by 6 to get the number of empty pixels on each side
-//        display.setCursor(CHARMARGIN + halfChars + 3, 56);                      //set the cursor position, add 3 pixels to make the text center
-//    }
-//    else {                                                                      //if the length of the text is odd
-//        int halfText = centerLength / 2;                                        //get the number of characters on each side of the middle character (since it's odd)
-//        int spaces = USABLECHARS - (halfText * 2);                              //continue like it was even
-//        int halfSpaces = spaces / 2;
-//        int halfChars = halfSpaces * 6;
-//        display.setCursor(CHARMARGIN + halfChars, 56);                          //don't need to add the 3 pixels since it should already be center
-//    }
-    centerText(56, 1, center);
-    //display.print(center);                                                      //print the center text
+    centerText(57, 1, center);
     
     //right
     display.fillTriangle(112, 56, 120, 56, 120, 64, WHITE);                     //right side designy stuff
@@ -113,4 +98,10 @@ void oled::centerText(byte y, byte size, String in) {
     display.setTextSize(size);
     display.setCursor((SSD1306_LCDWIDTH - textSize)/2, y);
     display.print(in);
+}
+
+void oled::showTitle(String in) {
+    display.setTextColor(WHITE);
+    centerText(0, 1, in);
+    display.drawFastHLine(0, 8, SSD1306_LCDWIDTH, WHITE);
 }
