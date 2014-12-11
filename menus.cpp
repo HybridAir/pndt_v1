@@ -6,6 +6,8 @@ extern Adafruit_SSD1306 display;
 extern oled disp;
 extern settings set;
 
+menuTime mTime;
+
 menus::menus() {
     //defaults 
     activeItem = 0;
@@ -13,16 +15,17 @@ menus::menus() {
 }
 
 void menus::doMain() {
-    disp.drawBtnBar('v', "Return", '^');
+    disp.drawBtnBar('+', "Select", '-');
     drawList();
     display.display();
 }
 
 void menus::drawList() {            //used to draw the list of items, and highlight the currently selected one
     display.setCursor(0, 0);
-    drawListItem("item 1", 0);
+    drawListItem("Set Time", 0);
     drawListItem("item 2", 1);
     drawListItem("item 3", 2);
+    drawListItem("Return", 3);
 }
 
 void menus::drawListItem(String text, byte index) {            //draws a list item, needs it's position/index
@@ -34,6 +37,21 @@ void menus::drawListItem(String text, byte index) {            //draws a list it
     }
     display.setTextSize(1);
     display.println(text);
+}
+
+void menus::doItem() {
+    switch(activeItem) {
+        case 0:
+            //menuTime.doMenu();
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            set.setMenu();
+            break;
+    }
 }
 
 void menus::prevItem() {
@@ -59,7 +77,8 @@ void menus::doBtn(byte btn) {
                 prevItem();
             }
             else if(btn == 2) {     //center button
-                set.setMenu();
+                //set.setMenu();
+                doItem();
             }
             else if(btn == 4) {      //right button
                 nextItem();
