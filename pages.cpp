@@ -60,21 +60,21 @@ void pages::doTitle(byte page) {                                                
     
     //get the text formatting set up
     display.setTextColor(WHITE);                                                
-    display.setTextSize(2);
+    //display.setTextSize(2);
     display.setCursor(0, 0);
     
     switch(page) {                                                              //show a page title
         case 0:
-            display.println(home.getTitle());
+            disp.centerText(16, 2, home.getTitle());
             break;
         case 1:
-            display.println(text.getTitle());
+            disp.centerText(16, 2, text.getTitle());
             break;
 //        case 2:
 //            display.println("debug");
 //            break;
         case 2:
-            display.println(batt.getTitle());
+            disp.centerText(16, 2, batt.getTitle());
             break;
     }
 }
