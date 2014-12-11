@@ -5,7 +5,9 @@
 #include "oled.h"
 #include "settings.h"
 
-#define NUMITEMS 2
+#include "menuTime.h"
+
+#define NUMITEMS 3
 
 class menus {
     public:
@@ -15,6 +17,7 @@ class menus {
         void nextItem();
         void doBtn(byte btn);
     private:
+        void doItem();
         void drawList();
         void drawListItem(String text, byte index);
         byte activeItem;
