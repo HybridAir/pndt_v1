@@ -216,7 +216,7 @@ void pageHome::drawData(byte x, byte y, byte data) {            //used to draw a
                        
             emptyBars = (inout.getBattBar() * 1);
             for(byte i = 0; i < (3 - emptyBars); i++) {
-                drawBattBar(102, y, i);
+                drawBattBar(99, y + 3, i);
             }
             break;
         case 2:             //motd?
