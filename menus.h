@@ -16,11 +16,14 @@ class menus {
         void prevItem();
         void nextItem();
         void doBtn(byte btn);
+        void showTitle(String in);
     private:
         void doItem();
         void drawList();
         void drawListItem(String text, byte index);
         byte activeItem;
+        bool showMenu;
+        byte currentBtn;
 
 };
 
