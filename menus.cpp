@@ -1,4 +1,4 @@
-//handles all onscreen menu related stuff
+//handles main menu related stuff
 
 #include "menus.h"
 
@@ -9,20 +9,26 @@ extern settings set;
 menuTime mTime;
 
 menus::menus() {
-    //defaults 
     activeItem = 0;
+    showMenu = false;
 
 }
 
 void menus::doMain() {
-    disp.drawBtnBar('+', "Select", '-');
-    drawList();
+    if(showMenu) {
+        doItem();
+    }
+    else {
+        disp.drawBtnBar('^', "Select", 'v');
+        disp.showTitle("Main Menu");
+        drawList();
+    }
     display.display();
 }
 
 void menus::drawList() {            //used to draw the list of items, and highlight the currently selected one
-    display.setCursor(0, 0);
-    drawListItem("Set Time", 0);
+    display.setCursor(0, 10);
+    drawListItem(mTime.getTitle(), 0);
     drawListItem("item 2", 1);
     drawListItem("item 3", 2);
     drawListItem("Return", 3);
@@ -42,7 +48,7 @@ void menus::drawListItem(String text, byte index) {            //draws a list it
 void menus::doItem() {
     switch(activeItem) {
         case 0:
-            //menuTime.doMenu();
+            mTime.doMenu(currentBtn);
             break;
         case 1:
             break;
@@ -73,14 +79,17 @@ void menus::nextItem() {
 }
 
 void menus::doBtn(byte btn) {
-            if(btn == 1) {       //left button was pressed
-                prevItem();
-            }
-            else if(btn == 2) {     //center button
-                //set.setMenu();
-                doItem();
-            }
-            else if(btn == 4) {      //right button
-                nextItem();
-            }
+    currentBtn = btn;
+    if(!showMenu) {
+        if(btn == 1) {       //left button was pressed
+            prevItem();
+        }
+        else if(btn == 2) {     //center button
+            showMenu = true;
+        }
+        else if(btn == 4) {      //right button
+            nextItem();
+        }
+        currentBtn = 0;
+    }
 }
