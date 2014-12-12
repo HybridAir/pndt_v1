@@ -6,6 +6,7 @@
 #include "settings.h"
 
 #include "menuTime.h"
+#include "menuAbout.h"
 
 #define NUMITEMS 3
 
