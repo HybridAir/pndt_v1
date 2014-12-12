@@ -16,7 +16,8 @@ class menus {
         void prevItem();
         void nextItem();
         void doBtn(byte btn);
-        void showTitle(String in);
+        void setMenu();
+        //void showTitle(String in);
     private:
         void doItem();
         void drawList();
