@@ -105,3 +105,11 @@ void oled::showTitle(String in) {
     centerText(0, 1, in);
     display.drawFastHLine(0, 8, SSD1306_LCDWIDTH, WHITE);
 }
+
+byte oled::extractD0(byte input) {                                            //extracts the digit in the tens place
+            return input / 10;
+        }
+        
+byte oled::extractD1(byte input) {                                            //extracts the digit in the ones place
+    return input - (extractD0(input) * 10);
+}
