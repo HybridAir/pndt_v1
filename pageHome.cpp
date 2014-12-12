@@ -1,5 +1,6 @@
 //handles the home info page
-//TODO: fuigure out how to initilize struct vars
+//TODO: fuigure out how to initilize struct vars?
+//get am pm going
 
 #include "pageHome.h"
 
@@ -17,22 +18,14 @@ struct Scroller               //used for animating the time
         byte offset;
         
         void updateVars(byte currentTime) {                                     //updates the time to the latest
-            currentD0 = extractD0(currentTime);
-            currentD1 = extractD1(currentTime);
-        }
-        
-        byte extractD0(byte input) {                                            //extracts the digit in the tens place
-            return input / 10;
-        }
-        
-        byte extractD1(byte input) {                                            //extracts the digit in the ones place
-            return input - (extractD0(input) * 10);
+            currentD0 = disp.extractD0(currentTime);
+            currentD1 = disp.extractD1(currentTime);
         }
         
         void scrollTime(byte x, byte y, byte size, byte input) {                //scrolls one section of the time, accepts 1 to 2 digits
             offset = FONTHEIGHT*size;            
-            byte digit0 = extractD0(input);                                     //the digit in the tens place
-            byte digit1 = extractD1(input);                                     //the digit in the ones place 
+            byte digit0 = disp.extractD0(input);                                     //the digit in the tens place
+            byte digit1 = disp.extractD1(input);                                     //the digit in the ones place 
             
             if(currentD0 != digit0 || currentD1 != digit1 ) {                   //if there are any new digits
                //figure out which one needs scrolling and which one doesn't
@@ -108,7 +101,7 @@ void pageHome::updateVars() {
     scrollingOut = true;
     dataDelay = 0;
     prevSec = second();
-    clockHour.updateVars(hour());
+    clockHour.updateVars(hourFormat12());
     clockMin.updateVars(minute());
     clockSec.updateVars(second());
 }
@@ -124,7 +117,7 @@ void pageHome::showPage(bool newPage) {
     display.setCursor(41, 0);
     display.print(":");
     
-    clockHour.scrollTime(0, 0, 4, hour());           //hour
+    clockHour.scrollTime(0, 0, 4, hourFormat12());           //hour
     clockMin.scrollTime(58, 0, 4, minute());          //min
     clockSec.scrollTime(106, 14, 2, second());          //sec
     
