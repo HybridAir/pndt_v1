@@ -1,7 +1,4 @@
-
-//handles the time/date setting menu
-//todo: make the time selection a little cleaner with rectangles instead of highlight
-//make the value setting into a struct or whatever
+//handles the about screen
 
 #include "menuAbout.h"
 
@@ -18,9 +15,24 @@ menuAbout::menuAbout() {
 }
 
 void menuAbout::doMenu(byte btn) {
-    currentBtn = btn;
+    display.setTextColor(WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 0);
+    display.print("pndt_v1");
+    display.setTextWrap(true);
+    display.setTextSize(1);
+    display.setCursor(0, 21);
+    display.print("Designed and built by");
+    display.println("Blake Stratton for");
+    display.println("Kimberly Vandahl.");
+    display.println("hw_v1 fw_v1.0");
+    display.setTextWrap(false);
        
-    disp.drawBtnBar('-', "Next", '+');
+    disp.drawBtnBar('-', "Return", '-');
+    
+    if(btn == 2) {
+        menu.setMenu();
+    }
 }
 
 String menuAbout::getTitle() {
