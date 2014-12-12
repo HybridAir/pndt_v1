@@ -27,6 +27,8 @@ class oled {
         void drawBtnBar(char left, String center, char right);
         void centerText(byte y, byte size, String in);
         void showTitle(String in);
+        byte extractD0(byte input);
+        byte extractD1(byte input);
 private:
     
               
