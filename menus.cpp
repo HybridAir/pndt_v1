@@ -7,6 +7,7 @@ extern oled disp;
 extern settings set;
 
 menuTime mTime;
+menuAbout mAbout;
 
 menus::menus() {
     activeItem = 0;
@@ -29,8 +30,8 @@ void menus::doMain() {
 void menus::drawList() {            //used to draw the list of items, and highlight the currently selected one
     display.setCursor(0, 10);
     drawListItem(mTime.getTitle(), 0);
-    drawListItem("item 2", 1);
-    drawListItem("item 3", 2);
+    drawListItem("Reserved", 1);
+    drawListItem("About", 2);
     drawListItem("Return", 3);
 }
 
@@ -51,10 +52,13 @@ void menus::doItem() {
             mTime.doMenu(currentBtn);
             break;
         case 1:
+            setMenu();          //reserved
             break;
         case 2:
+            mAbout.doMenu(currentBtn);
             break;
         case 3:
+            setMenu();
             set.setMenu();
             break;
     }
