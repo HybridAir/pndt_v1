@@ -1,6 +1,5 @@
 //handles the time/date setting menu
 //todo: make the time selection a little cleaner with rectangles instead of highlight
-//make the value setting into a struct or whatever
 
 #include "menuTime.h"
 
