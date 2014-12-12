@@ -1,6 +1,4 @@
 //handles the home info page
-//TODO: fuigure out how to initilize struct vars?
-//get am pm going
 
 #include "pageHome.h"
 
@@ -123,7 +121,13 @@ void pageHome::showPage(bool newPage) {
     
     display.setCursor(106, 2);
     display.setTextSize(1);
-    display.print("PM");
+    
+    if(isPM()) {
+        display.print("PM");
+    }
+    else {
+        display.print("AM");
+    }
 
     scrollData(0, 37);
 
