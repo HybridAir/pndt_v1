@@ -93,3 +93,12 @@ void menus::doBtn(byte btn) {
         currentBtn = 0;
     }
 }
+
+void menus::setMenu() {             //used to toggle whether the menu is displayed
+    if(showMenu == true) {
+        showMenu = false;
+    }
+    else {
+        showMenu = true;
+    }
+}
