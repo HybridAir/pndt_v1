@@ -216,9 +216,9 @@ void pageHome::drawData(byte x, byte y, byte data) {            //used to draw a
                 drawBattBar(99, y + 3, i);
             }
             break;
-        case 2:             //motd?
-            display.println("Hello Worl");
-            break;                
+        //case 2:             //motd?
+        //    display.println("Hello Worl");
+        //    break;                
     }
 }
     
