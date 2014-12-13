@@ -113,7 +113,7 @@ void io::processTmp(bool stabilizing) {                                         
 }
 
 float io::getTmp() {                                                            //returns the converted celsius temperature as a float
-    return (((tmp * ((AREF * 1000) / 1024.0)) - 555) / 10.0);                    //do some witchcraft and return the converted float
+    return (((tmp * ((AREF * 1000) / 1024.0)) - 550) / 10.0);                    //do some witchcraft and return the converted float
 }
 
 void io::turnOff() {                                                            //a simple way to turn the power switch off
