@@ -13,6 +13,8 @@ class pageText {
     private:       
         void resetVars();
         int position;
+        byte message;
+        String out;
               
 };
 
