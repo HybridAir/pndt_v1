@@ -6,7 +6,7 @@
 
 #define FONTHEIGHT 8
 #define FONTWIDTH 6
-#define MAXDATA 2
+#define MAXDATA 1
 #define DATAHEIGHT 18
 #define DATADELAY 5
 #define BARWIDTH 8
